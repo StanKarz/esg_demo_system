@@ -35,14 +35,31 @@ def build_tree(data: list) -> dict:
         for node_dict in sublist:
             node_id = node_dict['self_id']
             node_text = node_dict.get('text_str', "")[:100]
+            
+            # Skip nodes with empty "text_str" unless they are the root node
+            if node_id != 'r0' and node_text == "":
+                print(f"Skipping node {node_id} because it has an empty 'text_str'")
+                continue
+            
             id_to_node[node_id] = Node(node_id, parent=None, text_str=node_text)
 
     # Second, link nodes to their parents
     for sublist in data:
         for node_dict in sublist:
-            node = id_to_node[node_dict['self_id']]
-            if node_dict['parent_id']:
-                node.parent = id_to_node[node_dict['parent_id']]
+            node_id = node_dict['self_id']
+            parent_id = node_dict['parent_id']
+
+            # Skip if the node or its parent were skipped earlier
+            if node_id not in id_to_node:
+                print(f"Skipping node {node_id} because it was not included in the first pass")
+                continue
+            if parent_id and parent_id not in id_to_node:
+                print(f"Skipping node {node_id} because its parent {parent_id} was not included in the first pass")
+                continue
+            
+            node = id_to_node[node_id]
+            if parent_id:
+                node.parent = id_to_node[parent_id]
 
     return id_to_node
 

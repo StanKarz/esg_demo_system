@@ -334,13 +334,13 @@ function update(source) {
 }
 
 .node text {
-  font: 12px sans-serif;
+  font: 20px sans-serif;
 }
 
 .link {
   fill: none;
   stroke: #ccc;
-  stroke-width: 2.5px;
+  stroke-width: 4px;
 }
 
 html, body{
@@ -389,17 +389,17 @@ var i = 0,
 
 // declares a tree layout and assigns the size
 var treemap = d3.tree().size([height, width]).separation(function(a, b) {
-    return (a.parent == b.parent ? 50 : 25);
+    return (a.parent == b.parent ? 70 : 50);
 });
 
 // load the external data
-d3.json("tree.json", function(error, treeData) {
+d3.json("updated_tree.json", function(error, treeData) {
   if (error) throw error;
 
 // Assigns parent, children, height, depth
 root = d3.hierarchy(treeData, function(d) { return d.children; });
 root.x0 = height / 2;
-root.y0 = 0;
+root.y0 = width / 2;
 
 // Collapse after the second level
 root.children.forEach(collapse);
@@ -433,7 +433,7 @@ function update(source) {
   var treeData = treemap(root);
 
   // adjust these values based on how much padding you want around the tree
-  var treePadding = 50;
+  var treePadding = 100;
 
   // find the maximum and minimum x and y values
   var xMax = d3.max(treeData.descendants(), function(d) { return d.x; });
@@ -448,7 +448,7 @@ function update(source) {
       links = treeData.descendants().slice(1);
 
   // Normalize for fixed-depth.
-  nodes.forEach(function(d){ d.y = d.depth * 700});
+  nodes.forEach(function(d){ d.y = d.depth * 1200});
 
   // Update treemap size
   // treemap.size([height, width]);
@@ -477,7 +477,7 @@ function update(source) {
 
   // Add labels for the nodes
   nodeEnter.append('text')
-      .attr("dy", ".35em")
+      .attr("dy", ".85em")
       .attr("x", function(d) {
           return d.children || d._children ? -13 : 13;
       })
@@ -498,7 +498,7 @@ function update(source) {
 
   // Update the node attributes and style
   nodeUpdate.select('circle.node')
-    .attr('r', 12)
+    .attr('r', 15)
     .style("fill", function(d) {
         return d._children ? "lightsteelblue" : "#fff";
     })
@@ -506,7 +506,7 @@ function update(source) {
 
 
     nodeUpdate.select('circle.node')
-  .attr('r', 12)
+  .attr('r', 15)
   .style("fill", function(d) {
     // change the fill color depending on whether the node has children or not
     if (d._children) {  // collapsed nodes
@@ -530,11 +530,11 @@ function update(source) {
 
   // On exit reduce the node circles size to 0
   nodeExit.select('circle')
-    .attr('r', 1e-6);
+    .attr('r', 1e-5);
 
   // On exit reduce the opacity of text labels
   nodeExit.select('text')
-    .style('fill-opacity', 1e-4);
+    .style('fill-opacity', 1e-5);
 
   // ****************** links section ***************************
 
