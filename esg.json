@@ -1,0 +1,47 @@
+{
+  "Environmental": {
+    "Climate Change": {
+      "Greenhouse Gas Emissions": {},
+      "Carbon Footprint": {},
+      "Renewable Energy": {}
+    },
+    "Resource Use": {
+      "Water Conservation": {},
+      "Waste Management": {},
+      "Sustainable Materials": {}
+    },
+    "Biodiversity": {
+      "Habitat Conservation": {},
+      "Species Protection": {}
+    }
+  },
+  "Social": {
+    "Human Rights": {
+      "Fair Labor Practices": {},
+      "Diversity and Inclusion": {},
+      "Health and Safety": {}
+    },
+    "Community Impact": {
+      "Economic Development": {},
+      "Philanthropy": {}
+    },
+    "Customer Satisfaction": {
+      "Product Quality": {},
+      "Privacy and Data Security": {}
+    }
+  },
+  "Governance": {
+    "Corporate Ethics": {
+      "Anti-Corruption": {},
+      "Transparency and Reporting": {}
+    },
+    "Board Structure": {
+      "Board Diversity": {},
+      "Executive Compensation": {}
+    },
+    "Shareholder Rights": {
+      "Voting Rights": {},
+      "Shareholder Engagement": {}
+    }
+  }
+}
