@@ -1,0 +1,7 @@
+.nav-link {
+  font-size: 1.1rem; /* adjust as needed */
+}
+
+.nav-link:hover {
+  color: white !important;
+}

@@ -1,32 +1,37 @@
-import React, { useState } from 'react';
+
+import React from 'react';
+import { Navbar, Nav, Container } from 'react-bootstrap';
+import './navbar.css';  // Add this line
 import { Link } from 'react-router-dom';
-import '../Navbar.css';
 
-function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
-
+function NavbarComponent() {
   return (
-    <nav className="navbar">
-      <ul className={menuOpen ? 'navbar-menu-open' : ''}>
-        <li>
-          <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
-        </li>
-        <li>
-          <Link to="/about" onClick={() => setMenuOpen(false)}>About</Link>
-        </li>
-        <li>
-          <Link to="/contact" onClick={() => setMenuOpen(false)}>Contact</Link>
-        </li>
-      </ul>
-      <div className="hamburger-menu" onClick={toggleMenu}>
-        &#9776;
-      </div>
-    </nav>
+    <Navbar bg="dark" variant="dark" expand="lg">
+      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Collapse id="basic-navbar-nav">
+        <Nav>
+          <Container className="px-3">
+            <Link className="nav-link" to="/">Home</Link>
+          </Container>
+          <Container className="px-3">
+            <Link className="nav-link" to="/about">About</Link>
+          </Container>
+          <Container className="px-3">
+            <Link className="nav-link" to="/contact">Contact</Link>
+          </Container>
+          <Container className="px-3">
+            <Link className="nav-link" to="/companies">Companies</Link>
+          </Container>
+          <Container className="px-3">
+            <Link className="nav-link" to="/visualisations">Visualisations</Link>
+          </Container>
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
   );
 }
 
-export default Navbar;
+export default NavbarComponent;
+
+
