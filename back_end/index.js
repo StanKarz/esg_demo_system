@@ -5,7 +5,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
 const multer = require('multer');
-
+const childProcess = require('child_process');
+const path = require('path');
 const fs = require('fs');
 const dir = './uploads';
 
@@ -61,17 +62,39 @@ app.get('/search', async (req, res) => {
 // File upload endpoint
 app.post('/upload', upload.single('file'), (req, res) => {
   console.log(req.file);  // Log uploaded file metadata to console
-  res.status(200).send('File uploaded successfully');
+  // Now spawn the Python child process to process the uploaded file
+  const outputFile = 'output.json';
+  let pyProcess = childProcess.spawn('python', ['tree_vis/data_processing.py', req.file.path, outputFile]);
+
+  let pythonOutput = '';
+
+  pyProcess.stdout.on('data', (data) => {
+    console.log(`Python script output: ${data}`);
+    pythonOutput += data.toString();
+  });
+
+  pyProcess.stderr.on('data', (data) => {
+    console.error(`Python script error: ${data}`);
+  });
+
+  pyProcess.on('exit', (code) => {
+    if (code !== 0) {
+      console.log(`Python script exited with code ${code}`);
+      res.status(500).send('There was an error processing your file');
+    } else {
+      res.status(200).send('File uploaded and processed successfully');
+    }
+  });
+});
+
+// Serve processed data
+app.get('/get-data', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'public/output.json'));
 });
 
 app.use((req, res, next) => {
   console.log(`Incoming request: ${req.method} ${req.url}`);
   next();
 });
-
-app.get('/test', (req, res) => {
-  res.send('Test route');
-});
-
 
 app.listen(3000, () => console.log('Listening on port 3000'));
