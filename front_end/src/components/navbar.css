@@ -5,3 +5,12 @@
 .nav-link:hover {
   color: white !important;
 }
+
+.nav-link:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-item:hover {
+  background-color: #343a40; /* Dark gray */
+  color: white;
+}

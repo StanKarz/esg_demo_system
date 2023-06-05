@@ -1,9 +1,10 @@
+// NavbarComponent.js
 
 import React from 'react';
-import { Navbar, Nav, Container } from 'react-bootstrap';
-import './navbar.css';  // Add this line
+import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap';
+import './navbar.css';
 import { Link } from 'react-router-dom';
-
+import { LinkContainer } from 'react-router-bootstrap';
 
 function NavbarComponent() {
   return (
@@ -24,7 +25,20 @@ function NavbarComponent() {
             <Link className="nav-link" to="/companies">Companies</Link>
           </Container>
           <Container className="px-3">
-            <Link className="nav-link" to="/visualisations">Visualisations</Link>
+            <NavDropdown title="Visualisations" id="nav-dropdown">
+              <LinkContainer to="/visualisations/report_structure">
+                <NavDropdown.Item>Report structure</NavDropdown.Item>
+              </LinkContainer>
+              <LinkContainer to="/visualisations/topics">
+                <NavDropdown.Item>ESG Topics</NavDropdown.Item>
+              </LinkContainer>
+              <LinkContainer to="/visualisations/sentiment_analysis">
+                <NavDropdown.Item>Sentiment analysis</NavDropdown.Item>
+              </LinkContainer>
+              <LinkContainer to="/visualisations/word_frequency">
+                <NavDropdown.Item>ESG word frequency</NavDropdown.Item>
+              </LinkContainer>
+            </NavDropdown>
           </Container>
         </Nav>
       </Navbar.Collapse>
@@ -33,5 +47,3 @@ function NavbarComponent() {
 }
 
 export default NavbarComponent;
-
-
