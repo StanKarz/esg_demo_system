@@ -85,5 +85,5 @@ if __name__ == "__main__":
     base_name = os.path.basename(input_file)
     filename_without_ext = os.path.splitext(base_name)[0]
     output_file = os.path.join(
-        os.getcwd(), 'public', filename_without_ext + '_output.json')
+        os.getcwd(), 'processed_data', filename_without_ext + '_output.json')
     main(input_file, output_file)

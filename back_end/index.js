@@ -1,5 +1,4 @@
 require('dotenv').config();
-
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -16,6 +15,12 @@ if (!fs.existsSync(dir)){
 
 app.use(cors());
 app.use(express.json());
+// Serve tree.html
+app.use('/tree', express.static(path.join(__dirname, 'tree_vis')));
+// Serve processed data
+app.use('/processed_data', express.static(path.join(__dirname, 'processed_data')));
+
+app.use('/uploads', express.static('uploads'));
 
 // Multer setup
 const storage = multer.diskStorage({
@@ -23,7 +28,7 @@ const storage = multer.diskStorage({
     cb(null, 'uploads/')  // Adjust this path to where you want to store your uploaded files
   },
   filename: function(req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname)
+    cb(null, file.originalname)
   }
 })
 
@@ -62,8 +67,9 @@ app.get('/search', async (req, res) => {
 // File upload endpoint
 app.post('/upload', upload.single('file'), (req, res) => {
   console.log(req.file);  // Log uploaded file metadata to console
+  const originalFileName = path.parse(req.file.originalname).name;
+  const outputFile = `${originalFileName}_output.json`;
   // Now spawn the Python child process to process the uploaded file
-  const outputFile = 'output.json';
   let pyProcess = childProcess.spawn('python', ['tree_vis/data_processing.py', req.file.path, outputFile]);
 
   let pythonOutput = '';
@@ -82,14 +88,16 @@ app.post('/upload', upload.single('file'), (req, res) => {
       console.log(`Python script exited with code ${code}`);
       res.status(500).send('There was an error processing your file');
     } else {
-      res.status(200).send('File uploaded and processed successfully');
+      res.status(200).send({message: 'File uploaded and processed successfully', filename: outputFile});
     }
   });
 });
 
 // Serve processed data
-app.get('/get-data', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'public/output.json'));
+app.get('/get-data/:filename', (req, res) => {
+  const filename = req.params.filename;
+  console.log(filename);
+    res.sendFile(path.resolve(__dirname, `processed_data/${filename}`));
 });
 
 app.use((req, res, next) => {

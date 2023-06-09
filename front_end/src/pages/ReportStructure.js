@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function ReportStructure() {
     const [file, setFile] = useState(null);
+    const navigate = useNavigate();
 
     const submitForm = (event) => {
         event.preventDefault();
@@ -13,6 +15,8 @@ function ReportStructure() {
         axios.post('http://localhost:3000/upload', formData)
             .then(response => {
                 console.log(response);
+                const { filename } = response.data;
+                navigate(`/visualisations/report_structure/tree/${filename}`);
             })
             .catch(error => {
                 console.error('There was an error!', error);

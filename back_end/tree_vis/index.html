@@ -53,10 +53,8 @@ var svg = d3.select("body").append("svg")
     .attr("viewBox", `0 0 ${width + margin.right + margin.left} ${height + margin.top + margin.bottom}`)
     .attr("preserveAspectRatio", "xMidYMid meet")
     .call(zoom)
-  .append("g")
-  
+    .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
 
 var i = 0,
     duration = 750,
@@ -68,7 +66,7 @@ var treemap = d3.tree().size([height, width]).separation(function(a, b) {
 });
 
 // load the external data
-d3.json("test.json", function(error, treeData) {
+d3.json("updated_tree.json", function(error, treeData) {
   if (error) throw error;
 
 // Assigns parent, children, height, depth
@@ -103,7 +101,6 @@ function centerNode(source) {
 }
 
 function update(source) {
-
   // Assigns the x and y position for the nodes
   var treeData = treemap(root);
 
@@ -114,9 +111,6 @@ function update(source) {
   var xMax = d3.max(treeData.descendants(), function(d) { return d.x; });
   var xMin = d3.min(treeData.descendants(), function(d) { return d.x; });
   var yMax = d3.max(treeData.descendants(), function(d) { return d.y; });
-
-  
-
 
   // Compute the new tree layout.
   var nodes = treeData.descendants(),
@@ -130,7 +124,7 @@ function update(source) {
 
   // ****************** Nodes section ***************************
 
-  // Update the nodes...
+  // Update the nodes
   var node = svg.selectAll('g.node')
       .data(nodes, function(d) {return d.id || (d.id = ++i); });
 
@@ -180,7 +174,7 @@ function update(source) {
     .attr('cursor', 'pointer');
 
 
-    nodeUpdate.select('circle.node')
+  nodeUpdate.select('circle.node')
   .attr('r', 15)
   .style("fill", function(d) {
     // change the fill color depending on whether the node has children or not
@@ -259,8 +253,6 @@ function update(source) {
 
   // Calculate the scale to fit the tree into view
   var scale = Math.min(width / bounds.width, height / bounds.height);
-
-
 
   // Adjust the height of the svg to fit the tree
   height = x1 - x0 + margin.top + margin.bottom;
