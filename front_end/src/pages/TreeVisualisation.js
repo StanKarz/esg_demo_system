@@ -17,10 +17,17 @@ function TreeVisualisation() {
         let duration = 750;
         let root;
 
+        let prevZoomScale = 0.8;
+        let prevTranslation = [100, 100];
+
+        
+
     const svgContainer = d3.select(ref.current)
         .attr("width", "100%")
         .attr("height", "100%")
         .style("overflow", "hidden");
+
+        
     
     const zoom = d3.zoom()
         .scaleExtent([0.5, 10])
@@ -42,6 +49,29 @@ function TreeVisualisation() {
         // const treemap = d3.tree().size([svgHeight, svgWidth]);
         const treemap = d3.tree().size([900, 800]);  // increased size
 
+        // function centerTree() {
+        //     svgContainer.transition()
+        //         .duration(duration)
+        //         .call(zoom.transform, d3.zoomIdentity.translate(prevTranslation[0], prevTranslation[1]).scale(prevZoomScale));
+        // }
+
+        function centerTree() {
+            const nodesExtent = d3.extent(svg.selectAll('.node').nodes(), function(d) {
+                const bbox = d.getBBox();
+                const matrix = d.getCTM();
+                return [matrix.e + bbox.x, matrix.e + bbox.x + bbox.width];
+            });
+        
+            const xOffset = (nodesExtent[0] + nodesExtent[1]) / -2;
+            const scale = 0.8; // You can adjust the scale as needed
+            svgContainer.transition()
+                .duration(duration)
+                .call(zoom.transform, d3.zoomIdentity.translate(xOffset, 0).scale(scale));
+        }
+        
+
+
+
     d3.json(`http://localhost:3000/processed_data/${filename}`)
       .then((treeData) => { 
         root = d3.hierarchy(treeData, function(d) { return d.children; });
@@ -49,6 +79,7 @@ function TreeVisualisation() {
         root.y0 = 375;
         root.children.forEach(collapse);
         update(root);
+        centerTree();
       })
       .catch(error => {
         console.error("Error occurred while fetching and processing data: ", error);
@@ -79,7 +110,6 @@ function TreeVisualisation() {
           })
           .on('click', (event, d) => click(d));
 
-  
         nodeEnter.append('circle')
             .attr('class', 'node')
             .attr('r', 1e-4)
@@ -161,40 +191,45 @@ function TreeVisualisation() {
         });
   
         function click(d) {
+        let nodeToFocus;
         console.log(d)
           if (d.children) {
               d._children = d.children;
               d.children = null;
-              centerTree();
+              nodeToFocus = d.parent;
+            //   centerTree();
 
             } else {
               d.children = d._children;
               d._children = null;
-              centerNode(d);
+              nodeToFocus = d;
+            //   centerNode(d);
 
             }
           update(d);
+          centerNode(nodeToFocus);
         }
 
         function centerNode(source){
                 let scale = 0.8;
                 let x = -source.y * scale + 300; // 750 is half of 1500 (the size defined for the tree layout)
-                let y = -source.x * scale + 500;
+                let y = -source.x * scale + 300;
                 svgContainer.transition()
                     .duration(duration)
                     .call(zoom.transform, d3.zoomIdentity.translate(x, y).scale(scale));
         }
 
-        function centerTree() {
-            let scale = 0.8;  // This should be a smaller value than the scale used in `centerNode`
-            let x = 200;
-            let y = 200;
-            svgContainer.transition()
-                .duration(duration)
-                .call(zoom.transform, d3.zoomIdentity.translate(x, y).scale(scale));
-        }
+        // function centerTree() {
+        //     let scale = 0.75;  // This should be a smaller value than the scale used in `centerNode`
+        //     let x = 50;
+        //     let y = 50;
+        //     svgContainer.transition()
+        //         .duration(duration)
+        //         .call(zoom.transform, d3.zoomIdentity.translate(x, y).scale(scale));
+        // }
+
+     
         
-  
         function diagonal(s, d) {
   
           const path = `M ${s.y} ${s.x}
