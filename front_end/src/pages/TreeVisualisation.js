@@ -2,39 +2,60 @@ import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { useParams } from 'react-router-dom';
 import '../styles/TreeDiagram.css';
+import axios from 'axios';
+
+function FileUploadComponent() {
+    const [loading, setLoading] = useState(false);
+
+    const handleFileUpload = (file) => {
+        setLoading(true);  // Set loading state to true when the upload starts
+
+        const formData = new FormData();
+        formData.append('file', file);
+    
+        axios.post('http://localhost:3000/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        .then((response) => {
+            console.log(response.data);  // Log the response from the server
+            setLoading(false);  // Set loading state to false when the upload (and any subsequent processing) is done
+        })
+        .catch((error) => {
+            console.error("Error uploading file: ", error);
+            setLoading(false);  // Set loading state to false if there's an error
+        });
+    };
+}
 
 function TreeVisualisation() {
     
     const { filename: filenameFromParams } = useParams();
     const ref = useRef(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        console.log("Filename from params: ", filenameFromParams);
         drawTree(filenameFromParams);
     }, [filenameFromParams]);
 
     const drawTree = (filename) => {
         let i = 0;
-        let duration = 750;
+        let duration = 800;
         let root;
-
         let prevZoomScale = 0.8;
         let prevTranslation = [100, 100];
 
-        
-
     const svgContainer = d3.select(ref.current)
-        .attr("width", "100%")
-        .attr("height", "100%")
-        .style("overflow", "hidden");
 
-        
+    svgContainer.selectAll("*").remove();
     
     const zoom = d3.zoom()
         .scaleExtent([0.5, 10])
         .on("zoom", function (event){
             svg.attr("transform", event.transform)
         });
-
 
     const svg = svgContainer.append("svg")
         .attr("width", "100%")
@@ -44,22 +65,16 @@ function TreeVisualisation() {
         .call(zoom)
         .append("g");
 
-        // const svgWidth = ref.current.getBoundingClientRect().width;
-        // const svgHeight = ref.current.getBoundingClientRect().height;
-        // const treemap = d3.tree().size([svgHeight, svgWidth]);
-        const treemap = d3.tree().size([900, 800]);  // increased size
-
-        // function centerTree() {
-        //     svgContainer.transition()
-        //         .duration(duration)
-        //         .call(zoom.transform, d3.zoomIdentity.translate(prevTranslation[0], prevTranslation[1]).scale(prevZoomScale));
-        // }
+        const treemap = d3.tree().size([900, 800])
+        .separation(function(a, b) {
+            return (a.parent == b.parent ? 1 : 5) / a.depth;
+        });
 
         function centerTree() {
             const nodesExtent = d3.extent(svg.selectAll('.node').nodes(), function(d) {
                 const bbox = d.getBBox();
                 const matrix = d.getCTM();
-                return [matrix.e + bbox.x, matrix.e + bbox.x + bbox.width];
+                return matrix ? [matrix.e + bbox.x, matrix.e + bbox.x + bbox.width]: [0,0];
             });
         
             const xOffset = (nodesExtent[0] + nodesExtent[1]) / -2;
@@ -68,21 +83,21 @@ function TreeVisualisation() {
                 .duration(duration)
                 .call(zoom.transform, d3.zoomIdentity.translate(xOffset, 0).scale(scale));
         }
-        
-
-
 
     d3.json(`http://localhost:3000/processed_data/${filename}`)
       .then((treeData) => { 
+        console.log("Received tree data: ", treeData);
         root = d3.hierarchy(treeData, function(d) { return d.children; });
-        root.x0 = 375;
-        root.y0 = 375;
+        root.x0 = window.innerHeight / 2;
+        root.y0 = window.innerWidth / 10;
         root.children.forEach(collapse);
         update(root);
         centerTree();
+        setLoading(false);
       })
       .catch(error => {
         console.error("Error occurred while fetching and processing data: ", error);
+        setLoading(false);
       });
 
       const collapse = (d) => {
@@ -116,16 +131,13 @@ function TreeVisualisation() {
             .style("fill", function(d) {
                 return d._children ? "lightsteelblue" : "#fff";
             });
-  
+
         nodeEnter.append('text')
-            .attr("dy", ".85em")
-            .attr("x", function(d) {
-                return d.children || d._children ? 13 : -13;
-            })
-            .attr("text-anchor", function(d) {
-                return d.children || d._children ? "start" : "end";
-            })
-            .text(function(d) { return d.data.name; });
+        .attr("dy", " -1em") // Shifts the text vertically so it's centered on the node
+        .attr("x", 0) // Centers the text horizontally on the node
+        .style("text-anchor", "middle") // Ensures the text is centered at its position
+        .text(function(d) { return d.data.name; });
+
   
         const nodeUpdate = nodeEnter.merge(node);
   
@@ -189,46 +201,53 @@ function TreeVisualisation() {
           d.x0 = d.x;
           d.y0 = d.y;
         });
-  
+
         function click(d) {
-        let nodeToFocus;
-        console.log(d)
-          if (d.children) {
-              d._children = d.children;
-              d.children = null;
-              nodeToFocus = d.parent;
-            //   centerTree();
-
+            let nodeToFocus;
+            
+            // If the clicked node is the root
+            if (d.depth === 0) {
+              if (d.children) { // If the root node has children
+                collapseAll(d); // Collapse all children
+              } else if (d._children) { // If the root node has collapsed children
+                d.children = d._children; // Expand the root node
+                d._children = null;
+              }
+              nodeToFocus = d; // Set the root node as the node to focus
             } else {
-              d.children = d._children;
-              d._children = null;
-              nodeToFocus = d;
-            //   centerNode(d);
-
+              if (d.children) {
+                d._children = d.children;
+                d.children = null;
+                nodeToFocus = d.parent;
+              } else {
+                d.children = d._children;
+                d._children = null;
+                nodeToFocus = d;
+              }
             }
-          update(d);
-          centerNode(nodeToFocus);
-        }
-
+          
+            update(nodeToFocus); // Update with the node to focus
+            centerNode(nodeToFocus); // Center the node to focus
+          }
+          
+          // This function will recursively collapse all children of a node
+          function collapseAll(node) {
+            if (node.children) {
+              node.children.forEach(collapseAll); // Call this function for each child
+              node._children = node.children; 
+              node.children = null; 
+            }
+          }
+          
         function centerNode(source){
                 let scale = 0.8;
                 let x = -source.y * scale + 300; // 750 is half of 1500 (the size defined for the tree layout)
                 let y = -source.x * scale + 300;
                 svgContainer.transition()
                     .duration(duration)
+                    .ease(d3.easeCubic)
                     .call(zoom.transform, d3.zoomIdentity.translate(x, y).scale(scale));
         }
-
-        // function centerTree() {
-        //     let scale = 0.75;  // This should be a smaller value than the scale used in `centerNode`
-        //     let x = 50;
-        //     let y = 50;
-        //     svgContainer.transition()
-        //         .duration(duration)
-        //         .call(zoom.transform, d3.zoomIdentity.translate(x, y).scale(scale));
-        // }
-
-     
         
         function diagonal(s, d) {
   
@@ -244,7 +263,9 @@ function TreeVisualisation() {
   
     return (
       <div className="visualisation">
-        <div ref={ref}></div>
+        {loading ?
+        <div>Loading...</div> : null}
+        <div className={`svg-container ${loading ? 'hidden' : ''}`} ref={ref}></div>
       </div>
     );
   }
