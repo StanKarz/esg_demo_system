@@ -15,7 +15,6 @@ import matplotlib.colors as mcolors
 import nltk
 nltk.download('omw-1.4')
 
-
 environmental_words = [
     'clean', 'environmental', 'epa', 'sustainability', 'climate', 'warming', 'biofuels', 'biofuel',
     'green', 'renewable', 'solar', 'stewardship', 'wind', 'emission', 'emissions', 'ghg', 'ghgs',
@@ -24,7 +23,6 @@ environmental_words = [
     'groundwater', 'water', 'cleaner', 'cleanup', 'coal', 'contamination', 'fossil', 'resource',
     'air', 'carbon', 'nitrogen', 'pollution', 'superfund', 'biphenyls', 'hazardous', 'householding',
     'pollutants', 'printing', 'recycling', 'toxic', 'waste', 'wastes', 'weee', 'recycle']
-
 social_words = [
     'citizen', 'citizens', 'csr', 'disabilities', 'disability', 'disabled', 'human', 'nations',
     'social', 'un', 'veteran', 'veterans', 'vulnerable', 'children', 'epidemic', 'health', 'healthy',
@@ -44,7 +42,6 @@ social_words = [
     'educates', 'educating', 'education', 'educational', 'learning', 'mentoring', 'scholarships', 'teach',
     'teacher', 'teachers', 'teaching', 'training', 'employ', 'employment', 'headcount', 'hire', 'hired',
     'hires', 'hiring', 'staffing', 'unemployment']
-
 governance_words = [
     'align', 'aligned', 'aligning', 'alignment', 'aligns', 'bylaw', 'bylaws', 'charter',
     'charters', 'culture', 'death', 'duly', 'parents', 'independent', 'compliance', 'conduct',
@@ -80,6 +77,8 @@ governance_words = [
     'disclosure', 'disclosures', 'fasb', 'gaap', 'objectivity', 'press', 'sarbanes', 'engagement',
     'engagements', 'feedback', 'hotline', 'investor', 'invite', 'invited', 'mail', 'mailed', 'mailing',
     'mailings', 'notice', 'relations', 'stakeholder', 'stakeholders', 'compact', 'ungc']
+
+# Preprocessing and data cleaning functions
 
 
 def cleanup_text(text):
@@ -117,6 +116,8 @@ else:
 nltk.download('wordnet')
 
 
+# Generating word cloud
+
 def create_word_cloud(pdf_path, word_category):
     all_text = []
     with fitz.open(pdf_path) as doc:
@@ -144,6 +145,7 @@ def create_word_cloud(pdf_path, word_category):
     return word_freq
 
 
+# Flask server routes
 app = Flask(__name__)
 CORS(app)
 

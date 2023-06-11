@@ -44,7 +44,6 @@
             var width = 950;
             var height = 750;
             
-
             // set color scale
             var color = d3.scaleLinear().domain([0, d3.max(data, d => d.frequency)])
                           .range(["#87CEEB", "#0000FF"]);
@@ -52,8 +51,8 @@
                           var layout = d3.layout.cloud().size([width, height]).words(data).padding(7).rotate(() => Math.round(Math.random()) * 90).font("Impact").fontSize(d => fontSize(d.frequency)).on("end", draw);
                           layout.start();
                          
-                          function draw(words) {
-                d3.select("#word-cloud").append("svg")
+            function draw(words) {
+                d3.select("#word-cloud").html("").append("svg")
                   .attr("width", layout.size()[0])
                   .attr("height", layout.size()[1])
                   .append("g")
