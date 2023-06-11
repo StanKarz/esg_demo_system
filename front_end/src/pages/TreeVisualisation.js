@@ -2,32 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { useParams } from 'react-router-dom';
 import '../styles/TreeDiagram.css';
-import axios from 'axios';
-
-function FileUploadComponent() {
-    const [loading, setLoading] = useState(false);
-
-    const handleFileUpload = (file) => {
-        setLoading(true);  // Set loading state to true when the upload starts
-
-        const formData = new FormData();
-        formData.append('file', file);
-    
-        axios.post('http://localhost:3000/upload', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
-        .then((response) => {
-            console.log(response.data);  // Log the response from the server
-            setLoading(false);  // Set loading state to false when the upload (and any subsequent processing) is done
-        })
-        .catch((error) => {
-            console.error("Error uploading file: ", error);
-            setLoading(false);  // Set loading state to false if there's an error
-        });
-    };
-}
 
 function TreeVisualisation() {
     
@@ -44,8 +18,6 @@ function TreeVisualisation() {
         let i = 0;
         let duration = 800;
         let root;
-        let prevZoomScale = 0.8;
-        let prevTranslation = [100, 100];
 
     const svgContainer = d3.select(ref.current)
 
@@ -113,7 +85,7 @@ function TreeVisualisation() {
         const nodes = treeData.descendants();
         const links = treeData.descendants().slice(1);
   
-        nodes.forEach(function(d){ d.y = d.depth * 1200});
+        nodes.forEach(function(d){ d.y = d.depth * 1250});
   
         const node = svg.selectAll('g.node')
             .data(nodes, function(d) {return d.id || (d.id = ++i); });
