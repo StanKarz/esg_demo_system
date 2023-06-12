@@ -34,6 +34,23 @@
     <div id="word-cloud"></div>
     <div id="tooltip" class="tooltip" style="opacity: 0;"></div>
     <script>
+        function getColorScale(category) {
+            let minColor, maxColor;
+            switch (category) {
+                case "environmental":
+                    return d3.interpolateGreens;
+                case "social":
+                    return d3.interpolateOranges;
+                case "governance":
+                    return d3.interpolateBlues;
+                    break;
+                default:
+                    return d3.interpolateBlues;
+            }
+
+            return [minColor, maxColor];
+}
+
         function loadWordCloud(){
             var wordCategory = document.getElementById('word-category').value;
             var endpoint = "http://127.0.0.1:8000/word-cloud/" + wordCategory;
@@ -41,14 +58,13 @@
             d3.json(endpoint).then(function(words) {
             // convert JSON to array of {word, frequency} objects
             var data = Object.entries(words).map(([word, frequency]) => ({word, frequency}));
-            var width = 950;
-            var height = 750;
-            
-            // set color scale
-            var color = d3.scaleLinear().domain([0, d3.max(data, d => d.frequency)])
-                          .range(["#87CEEB", "#0000FF"]);
-                          var fontSize = d3.scalePow().exponent(0.5).domain([0, d3.max(data, d => d.frequency)]).range([10,100]);
-                          var layout = d3.layout.cloud().size([width, height]).words(data).padding(7).rotate(() => Math.round(Math.random()) * 90).font("Impact").fontSize(d => fontSize(d.frequency)).on("end", draw);
+            var width = 1000;
+            var height = 720;
+            var colorInterpolate = getColorScale(wordCategory)
+            var color = d => colorInterpolate((d.frequency / d3.max(data, d => d.frequency)) * 0.7 + 0.35);
+
+            var fontSize = d3.scalePow().exponent(0.5).domain([0, d3.max(data, d => d.frequency)]).range([10,100]);
+            var layout = d3.layout.cloud().size([width, height]).words(data).padding(7).rotate(() => Math.round(Math.random()) * 90).font("Impact").fontSize(d => fontSize(d.frequency)).on("end", draw);
                           layout.start();
                          
             function draw(words) {
@@ -62,13 +78,18 @@
                   .enter().append("text")
                   .style("font-size", d => d.size + "px")
                   .style("font-family", "Impact")
-                  .style("fill", d => color(d.frequency))
+                //   .style("fill", d => color(d.frequency))
+                  .style("fill", color)
                   .attr("text-anchor", "middle")
                   .attr("transform", d => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")")
                   .text(d => d.word)
                   .on("mouseover", mouseover)
                   .on("mouseout", mouseout)
                   .attr("class", "word");     
+            }
+
+            function darkenColor(d){
+                return d3.rgb(color(d)).darker(1)
             }
 
             function mouseover(d) {
@@ -78,8 +99,8 @@
                 d3.select(this)
                 .transition()
                 .duration(300)
+                .style("fill", darkenColor)
                 .style("font-size", (d.size + 5) + "px")
-                .style("fill", d => d3.rgb(color(d.frequency)).darker(0)); // Darken color on hover
                 d3.select("#tooltip").style("opacity", 1)
                 .html(d.word + ": " + d.frequency + " (" + percentage + "%)");
             }
@@ -89,7 +110,7 @@
                   .transition()
                   .duration(300)
                   .style("font-size", d.size + "px")
-                  .style("fill", d => color(d.frequency)) // Reset color on mouseout
+                  .style("fill", color)
                 d3.select("#tooltip").style("opacity", 0);
             }
         });

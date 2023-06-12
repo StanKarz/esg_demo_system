@@ -8,7 +8,11 @@ import Contact from './pages/Contact';
 import Navbar from './components/Navbar';
 import ReportStructure from './pages/ReportStructure';
 import TreeVisualisation from './pages/TreeVisualisation';
-import ESGWordFrequency from './pages/ESGWordFrequency';
+import UploadForm from './components/UploadForm';
+import WordCloud from './components/WordCloud';
+
+
+
 
 function App() {
   return (
@@ -22,7 +26,12 @@ function App() {
           <Route path="/companies" element={<SearchPage />} /> 
           <Route path="/visualisations/report_structure" element={<ReportStructure />} />
           <Route path="/visualisations/report_structure/tree/:filename" element={<TreeVisualisation />} />
-          <Route path="/visualisations/word_frequency" element={<ESGWordFrequency />} />
+          <Route path="/visualisations/word_frequency" exact component={UploadForm} />
+          <Route path="/visualisations/word_frequency/:filename" render={({ match }) => (
+            <WordCloud fileName={match.params.filename} />
+      )} />
+
+      
         </Routes>
       </div>
     </Router>
