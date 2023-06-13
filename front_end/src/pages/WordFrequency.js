@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import WordCloud from './WordCloud';
 
-
 function WordFrequency() {
     const { filename } = useParams();
     const [selectedFile, setSelectedFile] = useState();
-    // const [fileUploaded, setFileUploaded] = useState(false); // new state variable
+    const [selectedCategory, setSelectedCategory] = useState('environmental');
     const navigate = useNavigate();
 
     const handleFileChange = (event) => {
@@ -28,7 +27,6 @@ function WordFrequency() {
         })
         .then(response => response.json())
         .then(data => {
-            // setFileUploaded(true); // set fileUploaded to true
             navigate(`/visualisations/word_frequency/${selectedFile.name}`);
         })
         .catch(error => {
@@ -41,19 +39,20 @@ function WordFrequency() {
     return (
         <div>
             <h1>Word Frequency Visualisation</h1>
-            {/* Conditionally render file upload UI */}
             {!filename && (
                 <>
                     <input type="file" accept=".pdf" onChange={handleFileChange} />
                     <button onClick={handleFileUpload}>Upload</button>
                 </>
             )}
-            {/* Render the WordCloud component for each category */}
             {filename && (
                 <>
-                    <WordCloud filepath={filepath} category="environmental" />
-                    <WordCloud filepath={filepath} category="social" />
-                    <WordCloud filepath={filepath} category="governance" />
+                    <select value={selectedCategory} onChange={e => setSelectedCategory(e.target.value)}>
+                        <option value="environmental">Environmental Words</option>
+                        <option value="social">Social Words</option>
+                        <option value="governance">Governance Words</option>
+                    </select>
+                    <WordCloud filepath={filepath} category={selectedCategory} />
                 </>
             )}
         </div>
