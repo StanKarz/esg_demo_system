@@ -7,6 +7,7 @@ import Contact from './pages/Contact';
 import Navbar from './components/Navbar';
 import ReportStructure from './pages/ReportStructure';
 import TreeVisualisation from './pages/TreeVisualisation';
+import WordFrequency from './pages/WordFrequency';
 
 function App() {
   return (
@@ -19,7 +20,9 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/companies" element={<SearchPage />} /> 
           <Route path="/visualisations/report_structure" element={<ReportStructure />} />
-          <Route path="/visualisations/report_structure/tree/:filename" element={<TreeVisualisation />} />      
+          <Route path="/visualisations/report_structure/tree/:filename" element={<TreeVisualisation />} /> 
+          <Route path="/visualisations/word_frequency" element={<WordFrequency />} />
+          <Route path="/visualisations/word_frequency/:filename" element={<WordFrequency />} />
         </Routes>
       </div>
     </Router>

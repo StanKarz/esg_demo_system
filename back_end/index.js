@@ -120,7 +120,6 @@ app.post('/upload-wordcloud', upload.single('pdf'), (req, res) => {
   res.json({ path: req.file.path });
 });
 
-
 app.get('/word-cloud/:filepath/:category', (req, res) => {
   let filepath;
   try {
@@ -129,7 +128,7 @@ app.get('/word-cloud/:filepath/:category', (req, res) => {
     filepath = req.params.filepath;
   }
   const { category } = req.params;
-  const fullpath = path.join(__dirname, filepath);
+  const fullpath = path.join(__dirname, 'uploads', filepath);
   const python = spawn('python', ['word_freq/word_cloud.py', fullpath, category], {
     stdio: ['pipe', 'pipe', 'pipe']
 });

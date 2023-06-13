@@ -15,7 +15,7 @@ function ReportStructure() {
 
         setLoading(true);
 
-        axios.post('http://localhost:3000/upload', formData)
+        axios.post('http://localhost:3000/upload-tree', formData)
             .then(response => {
                 console.log(response);
                 const { filename } = response.data;
