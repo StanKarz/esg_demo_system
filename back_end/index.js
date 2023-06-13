@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const crypto = require('crypto');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
@@ -8,6 +9,8 @@ const childProcess = require('child_process');
 const path = require('path');
 const fs = require('fs');
 const dir = './uploads';
+const { spawn } = require('child_process');
+
 
 if (!fs.existsSync(dir)){
     fs.mkdirSync(dir);
@@ -32,7 +35,16 @@ const storage = multer.diskStorage({
   }
 })
 
-const upload = multer({ storage: storage })
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+      cb(null, file.originalname);
+    },
+  }),
+});
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -47,13 +59,11 @@ const companySchema = new mongoose.Schema({
 });
 
 const Company = mongoose.model('Company', companySchema);
-
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
   console.log('Connected to MongoDB successfully!');
 });
-
 
 app.get('/search', async (req, res) => {
   const { query } = req.query;
@@ -65,7 +75,7 @@ app.get('/search', async (req, res) => {
 });
 
 // File upload endpoint
-app.post('/upload', upload.single('file'), (req, res) => {
+app.post('/upload-tree', upload.single('file'), (req, res) => {
   console.log(req.file);  // Log uploaded file metadata to console
   const originalFileName = path.parse(req.file.originalname).name;
   const outputFile = `${originalFileName}_output.json`;
@@ -104,6 +114,49 @@ app.use((req, res, next) => {
   console.log(`Incoming request: ${req.method} ${req.url}`);
   next();
 });
+
+// Word cloud
+app.post('/upload-wordcloud', upload.single('pdf'), (req, res) => {
+  res.json({ path: req.file.path });
+});
+
+
+app.get('/word-cloud/:filepath/:category', (req, res) => {
+  let filepath;
+  try {
+    filepath = Buffer.from(req.params.filepath, 'base64').toString('utf8');
+  } catch (e) {
+    filepath = req.params.filepath;
+  }
+  const { category } = req.params;
+  const fullpath = path.join(__dirname, filepath);
+  const python = spawn('python', ['word_freq/word_cloud.py', fullpath, category], {
+    stdio: ['pipe', 'pipe', 'pipe']
+});
+  let result = '';
+
+  python.stdout.setEncoding('utf8');
+  python.stdout.on('data', (data) => {
+      result += data.toString();
+  });
+
+  python.stderr.setEncoding('utf8');
+  python.stderr.on('data', (data) => {
+      console.error(`stderr: ${data}`);
+  });
+
+  python.on('close', (code) => {
+      if (code !== 0) {
+          console.log(`python script exited with code ${code}`);
+      }
+      try {
+          res.json(JSON.parse(result));
+      } catch (e) {
+          res.json({ error: 'Failed to parse response' });
+      }
+  });
+});
+
 
 app.listen(3000, () => console.log('Listening on port 3000'));
 
