@@ -10,7 +10,7 @@ const path = require('path');
 const fs = require('fs');
 const dir = './uploads';
 const { spawn } = require('child_process');
-
+const PythonShell = require('python-shell').PythonShell;
 
 if (!fs.existsSync(dir)){
     fs.mkdirSync(dir);
@@ -22,7 +22,6 @@ app.use(express.json());
 app.use('/tree', express.static(path.join(__dirname, 'tree_vis')));
 // Serve processed data
 app.use('/processed_data', express.static(path.join(__dirname, 'processed_data')));
-
 app.use('/uploads', express.static('uploads'));
 
 // Multer setup
@@ -154,6 +153,54 @@ app.get('/word-cloud/:filepath/:category', (req, res) => {
           res.json({ error: 'Failed to parse response' });
       }
   });
+});
+
+// Sentiment Analysis
+app.post('/upload-sentiment', upload.single('pdf'), (req, res) => {
+  const python = spawn('python', ['sentiment_analysis/sentiment.py', req.file.path], {
+    stdio: ['pipe', 'pipe', 'pipe']
+  });
+
+  let result = '';
+  python.stdout.setEncoding('utf8');
+  python.stdout.on('data', (data) => {
+      result += data.toString();
+  });
+
+  python.stderr.setEncoding('utf8');
+  python.stderr.on('data', (data) => {
+      console.error(`stderr: ${data}`);
+  });
+
+  python.on('close', (code) => {
+      if (code !== 0) {
+          console.log(`python script exited with code ${code}`);
+          res.json({error: 'Failed to process file'});
+      } else {
+        console.log(result);  // Add this line 
+      try {
+          const sentimentData = JSON.parse(result);
+          // Include the file path in the response
+          sentimentData.path = req.file.filename; // assuming `filename` property exists on `file`
+          // Save sentiment data to a JSON file
+          fs.writeFileSync(`./sentiment_data/${req.file.filename}.json`, JSON.stringify(sentimentData));
+          res.json(sentimentData);
+      } catch (e) {
+        console.error(e);
+          res.json({ error: 'Failed to parse response' });
+      }
+    }
+  });
+});
+
+app.get('/sentiment-data/:filename', (req, res) => {
+  try {
+    const data = fs.readFileSync(`./sentiment_data/${req.params.filename}.json`, 'utf-8');
+    res.json(JSON.parse(data));
+  } catch (error) {
+    console.error(`Failed to read file: ${error}`);
+    res.json({ error: 'Failed to get sentiment data' });
+  }
 });
 
 

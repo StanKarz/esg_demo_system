@@ -8,6 +8,8 @@ import Navbar from './components/Navbar';
 import ReportStructure from './pages/ReportStructure';
 import TreeVisualisation from './pages/TreeVisualisation';
 import WordFrequency from './pages/WordFrequency';
+import SentimentAnalysis from './pages/SentimentAnalysis';
+import SentimentVis from './pages/SentimentVis';
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
           <Route path="/visualisations/report_structure/tree/:filename" element={<TreeVisualisation />} /> 
           <Route path="/visualisations/word_frequency" element={<WordFrequency />} />
           <Route path="/visualisations/word_frequency/:filename" element={<WordFrequency />} />
+          <Route path="/visualisations/sentiment_analysis" element={<SentimentAnalysis />} />
+          <Route path="/visualisations/sentiment_analysis/:filename" element={<SentimentVis />} />
         </Routes>
       </div>
     </Router>

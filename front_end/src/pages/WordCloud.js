@@ -1,9 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import d3Cloud from 'd3-cloud';
 
 const WordCloud = ({ filepath, category }) => {
     const ref = useRef();
+    const [tooltip, setTooltip] = useState({content: "", visibility: false, x: 0, y: 0});
+    const tooltipRef = useRef();
 
     useEffect(() => {
         if (!filepath) {
@@ -41,8 +43,36 @@ const WordCloud = ({ filepath, category }) => {
                     .style("fill", color)
                     .attr("text-anchor", "middle")
                     .attr("transform", d => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")")
-                    .text(d => d.word);
+                    .text(d => d.word)
+                    .on("mouseover", mouseover)
+                    .on("mouseout", mouseout)
+                    .attr("class", "word");
             }
+
+            function darkenColor(d){
+                return d3.rgb(color(d)).darker(1);
+            }
+
+            function mouseover(event, d) {
+                const totalWords = d3.sum(words, d => d.frequency);
+                const percentage = (d.frequency / totalWords * 100).toFixed(2);
+                d3.select(event.target)
+                    .transition()
+                    .duration(300)
+                    .style("fill", () => darkenColor(d))
+                    .style("font-size", (d.size + 5) + "px");
+                setTooltip({content: `${d.word}: ${d.frequency} (${percentage}%)`, visibility: true, x: event.clientX, y: event.clientY});
+            }
+
+            function mouseout(event, d) {
+                d3.select(event.target)
+                    .transition()
+                    .duration(300)
+                    .style("font-size", d.size + "px")
+                    .style("fill", () => color(d));
+                setTooltip({...tooltip, visibility: false});
+            }
+
             layout.start();
         });
     }, [filepath, category]);
@@ -63,6 +93,20 @@ const WordCloud = ({ filepath, category }) => {
     return (
         <div>
             <div ref={ref}></div>
+            {tooltip.visibility && 
+                <div ref={tooltipRef} style={{
+                    position: "absolute",
+                    left: tooltip.x,
+                    top: tooltip.y,
+                    background: "rgba(0, 0, 0, 0.7)",
+                    color: "#fff",
+                    padding: "3px 8px",
+                    borderRadius: "4px",
+                    pointerEvents: "none",
+                    fontSize: "14px",
+                    transform: 'translate(-50%, -100%)'
+                }}>{tooltip.content}</div>
+            }
         </div>
     );
 };
