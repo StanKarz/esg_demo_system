@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Brush, Label } from 'recharts';
+import '../styles/sentiment.css';
 
 function SentimentVis() {
     const { filename } = useParams(); // Get filename from URL parameters
     const [sentimentData, setSentimentData] = useState(null);
-    const [selectedSentiment, setSelectedSentiment] = useState('compound'); // add this line
+    const [selectedSentiments, setSelectedSentiments] = useState(['compound']); // Initialize with compound sentiment only
 
-    // A dictionary to map sentiment to its corresponding color
     const sentimentColors = {
-      'compound': '#ff7300',
-      'pos': '#82ca9d',
-      'neu': '#8884d8',
-      'neg': '#e41749'
+        'compound': '#FF8133',
+        'pos': '#2E933C',
+        'neu': '#51B9F6',
+        'neg': '#FF5F5C'
     };
 
-    // Fetch sentiment data when the component mounts
     useEffect(() => {
         const fetchData = async () => {
             const response = await fetch(`http://localhost:3000/sentiment-data/${filename}`);
@@ -41,36 +40,60 @@ function SentimentVis() {
             return (
                 <div className="custom-tooltip" style={{ backgroundColor: '#f4f4f4', padding: '5px', border: '1px solid #d4d4d4' }}>
                     <p className="label">Index: {label}</p>
-                    <p className="intro">{`${selectedSentiment} score: ${payload[0].value}`}</p> {/* Modified here */}
+                    {payload.map((pl, index) => 
+                        <p key={index}>{`${pl.dataKey} score: ${pl.value}`}</p>
+                    )}
                 </div>
             );
         }
         return null;
     };
 
-    // Render the sentiment data (or a loading message)
+    const handleCheckboxChange = (event) => {
+        if (selectedSentiments.includes(event.target.value)) {
+            setSelectedSentiments(selectedSentiments.filter(sentiment => sentiment !== event.target.value));
+        } else {
+            setSelectedSentiments([...selectedSentiments, event.target.value]);
+        }
+    }
+    
     return (
         <div>
             {sentimentData ? (
                 <div>
                     <h1>Sentiment scores over the course of a report for {filename}</h1>
-                    <select value={selectedSentiment} onChange={e => setSelectedSentiment(e.target.value)}>
-                        <option value="compound">Compound</option>
-                        <option value="pos">Positive</option>
-                        <option value="neu">Neutral</option>
-                        <option value="neg">Negative</option>
-                    </select>
+                    <div>
+                        {Object.keys(sentimentColors).map(sentiment => (
+                            <div key={sentiment}>
+                                <input 
+                                    type="checkbox"
+                                    id={sentiment}
+                                    value={sentiment}
+                                    checked={selectedSentiments.includes(sentiment)}
+                                    onChange={handleCheckboxChange}
+                                />
+                                <label htmlFor={sentiment}>{sentiment.charAt(0).toUpperCase() + sentiment.slice(1)}</label>
+                            </div>
+                        ))}
+                    </div>
                     <LineChart
+                        className='myChart'
                         width={1000}
                         height={500}
                         data={sentimentData}
+                        animationDuration={300} 
+                        animationEasing="ease-out"
                         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                     >
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="index" />
+                        <XAxis dataKey="index"/>
                         <YAxis />
                         <Tooltip content={<CustomTooltip />} />
-                        <Line type="monotone" dataKey={selectedSentiment} stroke={sentimentColors[selectedSentiment]} /> {/* Modified here */}
+                        <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
+                        {selectedSentiments.map(sentiment => 
+                            <Line key={sentiment} type="monotone" dataKey={sentiment} stroke={sentimentColors[sentiment]} strokeWidth={3} />
+                        )}
+                        <Brush />
                     </LineChart>
                 </div>
             ) : (
