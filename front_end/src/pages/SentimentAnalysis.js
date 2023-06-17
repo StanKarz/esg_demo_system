@@ -27,6 +27,7 @@ function SentimentAnalysis() {
 
   return (
     <form onSubmit={handleUpload}>
+      <h1>Sentiment Analysis</h1>
       <input type="file" accept=".pdf" ref={fileInput} required/>
       <button type="submit">Upload</button>
     </form>

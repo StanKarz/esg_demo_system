@@ -10,6 +10,8 @@ import TreeVisualisation from './pages/TreeVisualisation';
 import WordFrequency from './pages/WordFrequency';
 import SentimentAnalysis from './pages/SentimentAnalysis';
 import SentimentVis from './pages/SentimentVis';
+import Topics from './pages/Topics';
+import TopicsVis from './pages/TopicsVis';
 
 function App() {
   return (
@@ -27,6 +29,10 @@ function App() {
           <Route path="/visualisations/word_frequency/:filename" element={<WordFrequency />} />
           <Route path="/visualisations/sentiment_analysis" element={<SentimentAnalysis />} />
           <Route path="/visualisations/sentiment_analysis/:filename" element={<SentimentVis />} />
+          <Route path="/visualisations/topics" element={<Topics />} />
+          <Route path="/visualisations/topics/:fileName" element={<TopicsVis/>} />
+
+          
         </Routes>
       </div>
     </Router>

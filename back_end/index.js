@@ -23,6 +23,8 @@ app.use('/tree', express.static(path.join(__dirname, 'tree_vis')));
 // Serve processed data
 app.use('/processed_data', express.static(path.join(__dirname, 'processed_data')));
 app.use('/uploads', express.static('uploads'));
+// app.use('/topics-data', express.static('topics_data'));
+app.use('/topics-data', express.static(path.join(__dirname, 'topics_data')));
 
 // Multer setup
 const storage = multer.diskStorage({
@@ -203,6 +205,30 @@ app.get('/sentiment-data/:filename', (req, res) => {
   }
 });
 
+// Topic modelling
+app.post('/upload-lda', upload.single('file'), (req, res) => {
+  const pyProcess = spawn('python', ['topics/topic_modelling.py', req.file.path]);
+
+  pyProcess.stdout.on('data', (data) => {
+    console.log(`Python script output: ${data}`);
+  });
+
+  pyProcess.stderr.on('data', (data) => {
+    console.error(`Python script error: ${data}`);
+  });
+
+  pyProcess.on('exit', (code) => {
+    if (code !== 0) {
+      console.log(`Python script exited with code ${code}`);
+      res.status(500).send('There was an error processing your file');
+    } else {
+      let fileName = req.file.originalname.replace('.pdf', '');
+      res.status(200).send({message: 'File uploaded and processed successfully', filename: fileName});
+    }
+  });
+});
+
+app.use('/visualisations', express.static('visualisations'));
 
 app.listen(3000, () => console.log('Listening on port 3000'));
 
