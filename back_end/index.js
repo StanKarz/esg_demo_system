@@ -67,10 +67,15 @@ db.once('open', function() {
 });
 
 app.get('/search', async (req, res) => {
-  const { query } = req.query;
-  const companies = await Company.find({
-    company_name: new RegExp(query, 'i'),
-  });
+  const { query, industry, sector, location } = req.query;
+  const searchParams = {
+    ...(query && { company_name: new RegExp(query, 'i') }),
+    ...(industry && { industry: new RegExp(industry, 'i') }),
+    ...(sector && { sector: new RegExp(sector, 'i') }),
+    ...(location && { company_location: new RegExp(location, 'i') }),
+  };
+
+  const companies = await Company.find(searchParams)
 
   res.json(companies);
 });
@@ -231,4 +236,3 @@ app.post('/upload-lda', upload.single('file'), (req, res) => {
 app.use('/visualisations', express.static('visualisations'));
 
 app.listen(3000, () => console.log('Listening on port 3000'));
-

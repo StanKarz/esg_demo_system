@@ -60,7 +60,7 @@ function TreeVisualisation() {
       .then((treeData) => { 
         console.log("Received tree data: ", treeData);
         root = d3.hierarchy(treeData, function(d) { return d.children; });
-        root.x0 = window.innerHeight / 2;
+        root.x0 = 0;
         root.y0 = window.innerWidth / 10;
         root.children.forEach(collapse);
         update(root);
@@ -85,7 +85,9 @@ function TreeVisualisation() {
         const nodes = treeData.descendants();
         const links = treeData.descendants().slice(1);
   
-        nodes.forEach(function(d){ d.y = d.depth * 1250});
+        nodes.forEach(function(d){ d.x = d.depth * 1250});
+        
+        // nodes.forEach(function(d){ d.x = d.depth * 250});
   
         const node = svg.selectAll('g.node')
             .data(nodes, function(d) {return d.id || (d.id = ++i); });
@@ -144,6 +146,14 @@ function TreeVisualisation() {
   
         nodeExit.select('text')
           .style('fill-opacity', 1e-5);
+
+        
+          nodeExit.transition()
+          .duration(duration)
+          .attr("transform", function(d) {
+              return "translate(" + source.x + "," + source.y + ")";
+          })
+          .remove();
   
         const link = svg.selectAll('path.link')
             .data(links, function(d) { return d.id; });

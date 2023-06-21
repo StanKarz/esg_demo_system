@@ -4,7 +4,7 @@ const Home = () => {
   return (
     <div>
       <h1>Home</h1>
-      <p>Welcome to our multi-page app!</p>
+      <p>Home page content</p>
     </div>
   );
 };
