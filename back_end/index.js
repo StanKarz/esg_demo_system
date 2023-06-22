@@ -67,15 +67,27 @@ db.once('open', function() {
 });
 
 app.get('/search', async (req, res) => {
-  const { query, industry, sector, location } = req.query;
-  const searchParams = {
-    ...(query && { company_name: new RegExp(query, 'i') }),
-    ...(industry && { industry: new RegExp(industry, 'i') }),
-    ...(sector && { sector: new RegExp(sector, 'i') }),
-    ...(location && { company_location: new RegExp(location, 'i') }),
+  const { query, sectors, exchanges } = req.query;
+
+  console.log(`Query parameters received: sectors=${sectors}, exchanges=${exchanges}`); // Debugging line
+
+  let searchParams = {
+      ...(query && { company_name: new RegExp(query, 'i') }),
   };
 
-  const companies = await Company.find(searchParams)
+  if (sectors) {
+      const sectorsRegex = sectors.split(","          ).map(sector => new RegExp(`^${sector}$`, 'i')); // Case insensitive match
+      searchParams.sector = { $in: sectorsRegex };
+  }
+
+  if (exchanges) {
+      const exchangesRegex = exchanges.split(","          ).map(exchange => new RegExp(`^${exchange}$`, 'i')); // Case insensitive match
+      searchParams.exchange = { $in: exchangesRegex };
+  }
+
+  console.log(searchParams); // Debugging line: See the final search parameters
+
+  const companies = await Company.find(searchParams);
 
   res.json(companies);
 });

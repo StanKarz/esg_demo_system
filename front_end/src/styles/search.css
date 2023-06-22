@@ -1,3 +1,33 @@
 .margin-top {
   margin-top: 20px;
 }
+
+.basic-multi-select__multi-value {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .select__multi-value__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .filter-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.filter-options {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.filter-option {
+    flex: 1 0 20%;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}

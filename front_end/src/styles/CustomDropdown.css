@@ -1,0 +1,23 @@
+.dropdown-container {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.dropdown-header {
+  font-weight: bold;
+}
+
+.dropdown-options {
+  border-top: 1px solid #ccc;
+  padding: 8px 0;
+}
+
+.option {
+  padding: 4px 8px;
+}
+
+.option.selected {
+  background-color: lightblue;
+}
