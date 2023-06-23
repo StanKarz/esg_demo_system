@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Card, Button, Alert, Accordion, Form } from 'react-bootstrap';
+import { Card, Button, Alert, Accordion, Form } from 'react-bootstrap';
 import { FaTimesCircle } from "react-icons/fa";
 import { GiCancel } from "react-icons/gi";
 import '../styles/search.css';
@@ -16,7 +16,6 @@ function SearchPage() {
   useEffect(() => {
     search();
     }, [selectedSectors, selectedExchanges]);
-
 
     function search() {
       const sectors = selectedSectors.join(",");
@@ -37,14 +36,11 @@ function SearchPage() {
           });
   }
   
-  
   // Handle the form submission
 function handleFormSubmit(e) {
   e.preventDefault();
   search();
 }
-
-   
 
   function handleSectorChange(e) {
     const value = e.target.value;
@@ -114,7 +110,7 @@ function handleExchangeChange(e) {
                           <span className='filter-label'>Sectors</span>
                           <div className="filter-options">
                             {/* <Form.Label>Sectors</Form.Label> */}
-                            {["Technology", "Healthcare", "Services", "Financial", "Utilities", "Consumer Goods", "Real Estate", "Conglomerates", "Energy"].map(sector => (
+                            {["Technology", "Healthcare", "Services", "Financial", "Utilities", "Consumer Goods", "Real Estate", "Energy"].map(sector => (
                             <div className='filter-option' key={sector}>
                                <Form.Check
                                     type="checkbox"
@@ -161,6 +157,18 @@ function handleExchangeChange(e) {
             <p><strong>Industry:</strong> {company.industry}</p>
             <p><strong>Exchange:</strong> {company.exchange}</p>
             <p><strong>Location:</strong> {company.company_location}</p>
+
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
+            <p><strong>All ESG reports:</strong>
+              <a href={company.source_url} target="_blank" rel="noopener noreferrer" class="esg-link" title="Click to view all ESG reports">
+                  <i class="fas fa-external-link-alt"></i> View Reports
+              </a>
+          </p>
+          <p><strong>Most recent ESG report:</strong>
+              <a href={company.url} target="_blank" rel="noopener noreferrer" class="esg-link" title="Click to view the most recent ESG report">
+                  <i class="fas fa-file-alt"></i> View Recent Report
+              </a>
+          </p>
             {company.company_website && (
               <Button variant="primary" href={company.company_website} target="_blank">Visit company website</Button>
             )}

@@ -31,3 +31,29 @@
     margin-right: 10px;
     margin-bottom: 10px;
 }
+
+.search-input{
+  max-width: 300px;
+  flex: 1;
+}
+
+.filter-accordion {
+  max-width: 300px; /* You can adjust this value */
+  flex: 1;
+}
+
+.esg-link {
+  display: inline-block;
+  margin: 5px 0 5px 10px; /* Added margin to the left */
+  color: #3498db; /* You can choose a softer color */
+  text-decoration: none;
+}
+
+.esg-link i {
+  margin-right: 5px;
+  font-size: 0.8em; /* Making the icon a bit smaller */
+}
+
+.esg-link:hover {
+  text-decoration: underline;
+}

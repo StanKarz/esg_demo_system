@@ -50,14 +50,19 @@ const upload = multer({
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const companySchema = new mongoose.Schema({
-  id: String,
   company_name: String,
   industry: String,
   company_introduction: String,
   sector: String,
   ticker: String,
+  source_url: String,
+  url: String,
+  exchange: String, // Add this
+  company_location: String, // Add this
+  company_website: String // Add this
   // ... add other fields as necessary
 });
+
 
 const Company = mongoose.model('Company', companySchema);
 const db = mongoose.connection;
