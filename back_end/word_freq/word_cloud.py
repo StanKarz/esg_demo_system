@@ -165,32 +165,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-# # Flask server routes
-# app = Flask(__name__)
-# CORS(app)
-
-
-# @app.route('/')
-# def index():
-#     return render_template('word_cloud.html')
-
-
-# @app.route("/word-cloud/<category>")
-# def word_cloud(category):
-#     file_path = '../esg_reports/2022_Apple_ESG_Report.pdf'
-#     word_categories = {
-#         "environmental": environmental_words,
-#         "social": social_words,
-#         "governance": governance_words
-#     }
-#     if category not in word_categories:
-#         return jsonify({"error": "Invalid category. Choose from 'environmental', 'social', 'governance'."}), 400
-
-#     word_freq = create_word_cloud(file_path, word_categories[category])
-#     return jsonify(word_freq)
-
-
-# if __name__ == "__main__":
-#     app.run(host='127.0.0.1', port=8000, debug=True)

@@ -55,7 +55,6 @@ with fitz.open(file_path) as doc:
         text = text.strip()
         all_text.append(text)
 
-
 lemmatizer = WordNetLemmatizer()
 processed_text = []
 

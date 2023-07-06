@@ -109,7 +109,6 @@ function handleExchangeChange(e) {
                         <Form.Group controlId="sectors">
                           <span className='filter-label'>Sectors</span>
                           <div className="filter-options">
-                            {/* <Form.Label>Sectors</Form.Label> */}
                             {["Technology", "Healthcare", "Services", "Financial", "Utilities", "Consumer Goods", "Real Estate", "Energy"].map(sector => (
                             <div className='filter-option' key={sector}>
                                <Form.Check

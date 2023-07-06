@@ -52,7 +52,10 @@ function WordFrequency() {
                         <option value="social">Social Words</option>
                         <option value="governance">Governance Words</option>
                     </select>
-                    <WordCloud filepath={filepath} category={selectedCategory} />
+                    <div style={{display: 'flex'}}>
+                        <WordCloud filepath={filepath} category={selectedCategory} />
+                    </div>
+                    
                 </>
             )}
         </div>

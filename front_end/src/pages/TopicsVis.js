@@ -12,9 +12,6 @@ function TopicsVis() {
     width="100%"
     height="100%"
     styles={{ position: "absolute", top: "60px", left: "0" }} />
-
-       
-    
     );
 }
 

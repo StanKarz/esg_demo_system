@@ -89,7 +89,7 @@ const WordCloud = ({ filepath, category }) => {
                 return d3.interpolateBlues;
         }
     };
-
+    
     return (
         <div>
             <div ref={ref}></div>
