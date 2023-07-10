@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import WordCloud from './WordCloud';
+import BubbleChart from './BubbleChart';
 
 function WordFrequency() {
     const { filename } = useParams();
@@ -52,10 +53,10 @@ function WordFrequency() {
                         <option value="social">Social Words</option>
                         <option value="governance">Governance Words</option>
                     </select>
-                    <div style={{display: 'flex'}}>
+                    <div style={{display: 'block'}}>
                         <WordCloud filepath={filepath} category={selectedCategory} />
+                        <BubbleChart filepath={filepath} />
                     </div>
-                    
                 </>
             )}
         </div>

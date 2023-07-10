@@ -151,6 +151,10 @@ app.get('/word-cloud/:filepath/:category', (req, res) => {
     filepath = req.params.filepath;
   }
   const { category } = req.params;
+  const allowedCategories = ['environmental', 'social', 'governance', 'all'];
+  if (!allowedCategories.includes(category)) {
+    return res.status(400).json({ error: 'Invalid category.' });
+  }
   const fullpath = path.join(__dirname, 'uploads', filepath);
   const python = spawn('python', ['word_freq/word_cloud.py', fullpath, category], {
     stdio: ['pipe', 'pipe', 'pipe']

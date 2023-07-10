@@ -154,10 +154,15 @@ def main():
         "governance": governance_words
     }
 
-    if category not in word_categories:
+    if category == 'all':
+        combined_words = []
+        for cat_words in word_categories.values():
+            combined_words.extend(cat_words)
+        word_categories['all'] = combined_words
+    elif category not in word_categories:
         print(json.dumps(
-            {"error": "Invalid category. Choose from 'environmental', 'social', 'governance'."}))
-        # sys.exit(1)
+            {"error": "Invalid category. Choose from 'environmental', 'social', 'governance', 'all'."}))
+        sys.exit(1)
 
     word_freq = create_word_cloud(file_path, word_categories[category])
     print(json.dumps(word_freq))
