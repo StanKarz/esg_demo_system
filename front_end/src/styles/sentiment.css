@@ -2,4 +2,14 @@
   stroke-width: 3.5px;
 }
 
+.word.neg {
+  color: #FF5F5C;
+}
 
+/* .word.neu {
+  color: #51B9F6;
+} */
+
+.word.pos {
+  color: #2E933C;
+}
