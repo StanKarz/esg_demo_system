@@ -14,6 +14,7 @@ from anytree import Node
 import importlib
 import logging
 import json
+import sys
 importlib.reload(logging)
 logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s',
                     level=logging.INFO, datefmt='%I:%M:%S')
@@ -24,13 +25,13 @@ def projection_by_bboxes(boxes: np.array, axis: int) -> np.ndarray:
     length = np.max(boxes[:, axis::2])
     # length = (np.ceil(length)).astype(int)
     res = np.zeros(length, dtype=int)
-    # TODO: how to remove for loop?
     for start, end in boxes[:, axis::2]:
         res[start:end] += 1
     return res
 
-
 # from: https://dothinking.github.io/2021-06-19-%E9%80%92%E5%BD%92%E6%8A%95%E5%BD%B1%E5%88%86%E5%89%B2%E7%AE%97%E6%B3%95/#:~:text=%E9%80%92%E5%BD%92%E6%8A%95%E5%BD%B1%E5%88%86%E5%89%B2%EF%BC%88Recursive%20XY,%EF%BC%8C%E5%8F%AF%E4%BB%A5%E5%88%92%E5%88%86%E6%AE%B5%E8%90%BD%E3%80%81%E8%A1%8C%E3%80%82
+
+
 def split_projection_profile(arr_values: np.array, min_value: float, min_gap: float):
     arr_index = np.where(arr_values > min_value)[0]
     if not len(arr_index):
@@ -56,7 +57,6 @@ def recursive_xy_cut(boxes: np.ndarray, indices: List[int], res: List[int]):
     _indices = boxes[:, 1].argsort()
     y_sorted_boxes = boxes[_indices]
     y_sorted_indices = indices[_indices]
-
     y_projection = projection_by_bboxes(boxes=y_sorted_boxes, axis=1)
     pos_y = split_projection_profile(y_projection, 0, 1)
     if not pos_y:
@@ -68,13 +68,12 @@ def recursive_xy_cut(boxes: np.ndarray, indices: List[int], res: List[int]):
 
         y_sorted_boxes_chunk = y_sorted_boxes[_indices]
         y_sorted_indices_chunk = y_sorted_indices[_indices]
-
         _indices = y_sorted_boxes_chunk[:, 0].argsort()
         x_sorted_boxes_chunk = y_sorted_boxes_chunk[_indices]
         x_sorted_indices_chunk = y_sorted_indices_chunk[_indices]
-
         x_projection = projection_by_bboxes(boxes=x_sorted_boxes_chunk, axis=0)
         pos_x = split_projection_profile(x_projection, 0, 1)
+
         if not pos_x:
             continue
 
@@ -383,16 +382,6 @@ class PDFParser():
         report = self.text_list_to_str_clean(report)
         report = self.blocks_remove_no_meaning_block(report)
         report = self.blocks_remove_long_page(report, max_block_num=128)
-        # self.statistic(report)
-        # if self.page_num < self.config.valid_report_min_page_number:
-        #     return None
-
-        # def filter_condition(b, r):
-        #     return self.filter_duplicate_block_condition(b, r) and self.filter_few_text_condition(b, r)
-        # report = self.filter_template(filter_condition, report)
-
-        # self.statistic(report)
-        # report = self.block_merge(report)
         report = self.self_id_blocks_of_report(report)
 
         if links_jsonl is not None:
@@ -1362,19 +1351,6 @@ def get_config() -> PDFParserConfig:
     return config
 
 
-config = get_config()
-pdf_parser = PDFParser(config=config)
-
-pdf_path = 'back_end/esg_reports/2022 Microsoft Environmental Sustainability Report.pdf'
-
-report, toc, metadata = pdf_parser.parse_one_pdf_to_tree_simple(pdf_path)
-
-
-# Convert table of contents to list of dictionaries
-toc_dicts = [{'toc_id': i+1, 'name': item[1], 'parent_toc_id': item[2]}
-             for i, item in enumerate(toc)]
-
-
 def make_tree(data, node_id, tree):
     children = [item for item in data if item['parent_toc_id'] == node_id]
     if children:
@@ -1388,11 +1364,47 @@ def make_tree(data, node_id, tree):
     return tree
 
 
-# Create hierarchical tree
-root_node = [item for item in toc_dicts if item['parent_toc_id'] == 0][0]
-tree = {'name': root_node['name'], 'children': []}
-tree = make_tree(toc_dicts, root_node['toc_id'], tree)
+def main(input_file, output_file):
+    config = get_config()
+    pdf_parser = PDFParser(config=config)
 
-# Write to JSON file
-with open('TOC_OUTPUT.json', 'w', encoding='utf-8') as f:
-    json.dump(tree, f, ensure_ascii=False, indent=2)
+    report, toc, metadata = pdf_parser.parse_one_pdf_to_tree_simple(input_file)
+
+    print(toc)
+
+    # Convert table of contents to list of dictionaries
+    toc_dicts = [{'toc_id': i+1, 'name': item[1], 'parent_toc_id': item[2]}
+                 for i, item in enumerate(toc)]
+
+    # Create hierarchical tree
+    root_nodes = [item for item in toc_dicts if item['parent_toc_id'] == 0]
+    if root_nodes:  # Check if the list is not empty
+        root_node = root_nodes[0]
+        tree = {'name': root_node['name'], 'children': []}
+        tree = make_tree(toc_dicts, root_node['toc_id'], tree)
+    else:
+        # Handle the case where no root node was found
+        # This could be setting a default root node, logging a warning, etc.
+        print('No root node found in the table of contents')
+        tree = {'name': 'default', 'children': []}  # Example default tree
+
+    # Write to JSON file
+    with open(output_file, 'w', encoding='utf-8') as f:
+        json.dump(tree, f, ensure_ascii=False, indent=2)
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("Usage: python pdf_to_tree.py [input_file] [output_file]")
+        sys.exit(1)
+
+    input_file = sys.argv[1]
+    base_name = os.path.basename(input_file)
+    filename_without_ext = os.path.splitext(base_name)[0]
+
+    script_directory = os.path.dirname(__file__)
+    output_directory = os.path.join(script_directory, '..', 'processed_data')
+
+    output_file = os.path.join(
+        output_directory, filename_without_ext + '_output.json')
+    main(input_file, output_file)

@@ -103,7 +103,7 @@ app.post('/upload-tree', upload.single('file'), (req, res) => {
   const originalFileName = path.parse(req.file.originalname).name;
   const outputFile = `${originalFileName}_output.json`;
   // Now spawn the Python child process to process the uploaded file
-  let pyProcess = childProcess.spawn('python', ['tree_vis/data_processing.py', req.file.path, outputFile]);
+  let pyProcess = childProcess.spawn('python', ['tree_vis/pdf_to_tree.py', req.file.path, outputFile]);
 
   let pythonOutput = '';
 
@@ -130,7 +130,7 @@ app.post('/upload-tree', upload.single('file'), (req, res) => {
 app.get('/get-data/:filename', (req, res) => {
   const filename = req.params.filename;
   console.log(filename);
-    res.sendFile(path.resolve(__dirname, `processed_data/${filename}`));
+    res.sendFile(path.resolve(__dirname, `../processed_data/${filename}`));
 });
 
 app.use((req, res, next) => {

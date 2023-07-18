@@ -38,7 +38,7 @@ function TreeVisualisation() {
 
       const treemap = d3.tree().size([900, 800])
       .separation(function(a, b) {
-          return (a.parent == b.parent ? 1 : 2) / a.depth;
+          return (a.parent === b.parent ? 1 : 2) / a.depth;
       });
 
       function centerTree() {

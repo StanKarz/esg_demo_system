@@ -76,35 +76,58 @@ const BubbleChart = ({ filepath }) => {
                 'engagements', 'feedback', 'hotline', 'investor', 'invite', 'invited', 'mail', 'mailed', 'mailing',
                 'mailings', 'notice', 'relations', 'stakeholder', 'stakeholders', 'compact', 'ungc']
         };
-        
-        const currentRef = ref.current; // Copy ref.current to a variable
-        
-        fetch(`http://localhost:3000/word-cloud/${btoa(filepath)}/all`)
-        .then(response => response.json())
-        .then(rawData => {
-            const data = Object.entries(rawData).map(([id, value]) => ({ id, value }));
-            console.log(data);
-         
+    
+        const currentRef = ref.current;
+
+            fetch(`http://localhost:3000/word-cloud/${btoa(filepath)}/all`)
+                .then(response => response.json())
+                .then(rawData => {
+                    const data = Object.entries(rawData).map(([id, value]) => {
+                        let category = '';
+                        if (categories.environmental.includes(id)) category = 'environmental';
+                        if (categories.social.includes(id)) category = 'social';
+                        if (categories.governance.includes(id)) category = 'governance';
+                        return { id, value, category }; // add category
+            });
+            
+          
             const width = 1500; // Changed from 928
             const height = width;
             const margin = 1;
-
             const format = d3.format(",d");
 
-            const color = d => {
-                const categoryColors = {
-                    environmental: d3.scaleSequential([2, 8], d3.interpolateGreens),
-                    social: d3.scaleSequential([7, 10], d3.interpolateOranges),
-                    governance: d3.scaleSequential([7, 10], d3.interpolateBlues)
-                };
-                for (const [category, keywords] of Object.entries(categories)) {
-                    if (keywords.includes(d.data.id)) {
-                        return categoryColors[category](Math.random() * 10); // For the example, we use random numbers.
-                    }
+            const tooltip = d3.select('body').append('div')
+                .style('position', 'absolute')
+                .style('z-index', '10')
+                .style('visibility', 'hidden')
+                .style('background', 'white')
+                .style('border', 'solid')
+                .style('border-width', '1px')
+                .style('border-radius', '5px')
+                .style('padding', '10px');
+
+
+            const getColorScale = (category) => {
+                switch (category) {
+                    case "environmental":
+                        return d3.scaleSequential(d3.interpolateGreens);
+                    case "social":
+                        return d3.scaleSequential(d3.interpolateOranges);
+                    case "governance":
+                        return d3.scaleSequential(d3.interpolateBlues);
+                    default:
+                        return d3.scaleSequential(d3.interpolateBlues);
                 }
-                return '#ccc'; // Default color
             };
+
             
+            const color = d => {
+                let scale = getColorScale(d.data.category);
+                scale.domain([0, 1]);
+
+                return scale(Math.random());
+
+            };
 
             const pack = d3.pack()
                 .size([width - margin * 2, height - margin * 2])
@@ -137,14 +160,18 @@ const BubbleChart = ({ filepath }) => {
                     d3.select(this)
                         .transition()
                         .duration(200)
-                        .attr("r", d.r * 1.2); // Increase size by 20%
+                        .attr("fill-opacity", 1)
+                        .attr("r", d.r * 1.35); // Increase size by 20%
+                    
+                    tooltip.style('visibility', 'visible')
+                        .text(`Frequency: ${d.data.value}`)
+                        .style('left', `${event.pageX}px`)
+                        .style('top', `${event.pageY}px`);
             
                     // Add a text label for the word frequency
                     svg.append("text")
-                        .attr("id", "hoverLabel")
-                        .attr("x", event.pageX)
-                        .attr("y", event.pageY - 15)
-                        .text(`Frequency: ${d.data.value}`)
+                        .attr("x", d.x)
+                        .attr("y", d.y - 15)
                         .attr("font-size", "12px")
                         .attr("fill", "#000");
                 })
@@ -152,17 +179,18 @@ const BubbleChart = ({ filepath }) => {
                     d3.select(this)
                         .transition()
                         .duration(200)
+                        .attr("fill-opacity", 0.7)
                         .attr("r", d => d.r); // Restore the original size
-            
-                    // Remove the text label
-                    svg.select("#hoverLabel").remove();
+
+                    // Hide tooltip
+                    tooltip.style('visibility', 'hidden');
                 });
             
 
             node.append("text")
                 .text(d => d.data.id)
                 .attr("fill", "#000")
-                .attr("font-size", "14px"); // Change the font size here
+                .style("font-size", d => `${d.r / 3}px`);
 
         });
 
