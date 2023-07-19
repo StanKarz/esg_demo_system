@@ -12,6 +12,8 @@ import SentimentAnalysis from './pages/SentimentAnalysis';
 import SentimentVis from './pages/SentimentVis';
 import Topics from './pages/Topics';
 import TopicsVis from './pages/TopicsVis';
+import TopicTaxonomy from './pages/TopicTaxonomy';
+
 
 function App() {
   return (
@@ -31,6 +33,7 @@ function App() {
           <Route path="/visualisations/sentiment_analysis/:filename" element={<SentimentVis />} />
           <Route path="/visualisations/topics" element={<Topics />} />
           <Route path="/visualisations/topics/:fileName" element={<TopicsVis/>} />
+          <Route path="/visualisations/topic_taxonomy" element={<TopicTaxonomy/>} />
 
           
         </Routes>

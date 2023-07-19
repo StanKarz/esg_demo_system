@@ -38,6 +38,9 @@ function NavbarComponent() {
               <LinkContainer to="/visualisations/word_frequency">
                 <NavDropdown.Item>ESG word frequency</NavDropdown.Item>
               </LinkContainer>
+              <LinkContainer to="/visualisations/topic_taxonomy">
+                <NavDropdown.Item>Topic Taxonomy</NavDropdown.Item>
+              </LinkContainer>
             </NavDropdown>
           </Container>
         </Nav>
