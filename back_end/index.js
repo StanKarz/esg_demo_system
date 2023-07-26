@@ -103,7 +103,7 @@ app.post('/upload-tree', upload.single('file'), (req, res) => {
   const originalFileName = path.parse(req.file.originalname).name;
   const outputFile = `${originalFileName}_output.json`;
   // Now spawn the Python child process to process the uploaded file
-  let pyProcess = childProcess.spawn('python', ['tree_vis/pdf_to_tree.py', req.file.path, outputFile]);
+  let pyProcess = childProcess.spawn('python', ['tree_vis/pdf_to_tree_2.py', req.file.path, outputFile]);
 
   let pythonOutput = '';
 

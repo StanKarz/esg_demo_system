@@ -116,8 +116,30 @@ function update(source) {
   var nodes = treeData.descendants(),
       links = treeData.descendants().slice(1);
 
-  // Normalize for fixed-depth.
-  nodes.forEach(function(d){ d.y = d.depth * 1200});
+  
+  
+  // Calculate max nodes at any depth.
+  var maxNodesAtDepth = d3.max(nodes, function(d) { return d.depth; });
+
+  // Create an array with size maxDepth + 1, initialized with zeros.
+  var nodesAtDepth = Array(maxNodesAtDepth + 1).fill(0);
+
+// Count the number of nodes at each depth.
+  nodes.forEach(function(d) { nodesAtDepth[d.depth]++; });
+
+  // // Normalize for fixed-depth.
+  // nodes.forEach(function(d){ d.y = d.depth * 1200});
+
+  // Find the maximum number of nodes at any depth.
+  var maxNodes = d3.max(nodesAtDepth);
+
+  // Calculate depth spacing based on max nodes at any depth.
+  var depthSpacing = width / maxNodes;
+
+   // Normalize for dynamic depth.
+   nodes.forEach(function(d){ d.y = d.depth * depthSpacing});
+
+
 
   // Update treemap size
   // treemap.size([height, width]);
