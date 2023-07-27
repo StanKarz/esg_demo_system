@@ -42,7 +42,6 @@ var zoom = d3.zoom()
   .scaleExtent([0.5, 10]) // This defines the minimum and maximum zoom scale, feel free to change it as needed
   .on("zoom", zoomed);
 
-
 function zoomed() {
   svg.attr("transform", d3.event.transform);
 }
@@ -116,8 +115,6 @@ function update(source) {
   var nodes = treeData.descendants(),
       links = treeData.descendants().slice(1);
 
-  
-  
   // Calculate max nodes at any depth.
   var maxNodesAtDepth = d3.max(nodes, function(d) { return d.depth; });
 
@@ -126,9 +123,6 @@ function update(source) {
 
 // Count the number of nodes at each depth.
   nodes.forEach(function(d) { nodesAtDepth[d.depth]++; });
-
-  // // Normalize for fixed-depth.
-  // nodes.forEach(function(d){ d.y = d.depth * 1200});
 
   // Find the maximum number of nodes at any depth.
   var maxNodes = d3.max(nodesAtDepth);
@@ -140,8 +134,6 @@ function update(source) {
    nodes.forEach(function(d){ d.y = d.depth * depthSpacing});
 
 
-
-  // Update treemap size
   // treemap.size([height, width]);
 
   // ****************** Nodes section ***************************

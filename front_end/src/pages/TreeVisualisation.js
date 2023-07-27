@@ -38,8 +38,10 @@ function TreeVisualisation() {
 
       const treemap = d3.tree().size([900, 800])
       .separation(function(a, b) {
-          return (a.parent === b.parent ? 1 : 2) / a.depth;
+          let siblings = a.parent ? a.parent.children.length : 1;
+          return siblings > 1 ? 2/siblings : 2;
       });
+
 
       function centerTree() {
           const nodesExtent = d3.extent(svg.selectAll('.node').nodes(), function(d) {
@@ -100,13 +102,20 @@ function TreeVisualisation() {
           .style("fill", function(d) {
               return d._children ? "lightsteelblue" : "#fff";
           });
+          
+      const nodeUpdate = nodeEnter.merge(node);
 
       nodeEnter.append('text')
-      .attr("dy", " -1em") // Shifts the text vertically so it's centered on the node
-      .attr("x", 0) // Centers the text horizontally on the node
-      .style("text-anchor", "middle") // Ensures the text is centered at its position
-      .text(function(d) { return d.data.name; });
-      const nodeUpdate = nodeEnter.merge(node);
+        .attr("dy", function(d) {
+          return d.children || d._children ? "-0.3em" : ".35em";
+        }) 
+        .attr("x", function(d) {
+          return d.children || d._children ? -20 : 20;
+        }) 
+        .attr("text-anchor", function(d) {
+          return d.children || d._children ? "end" : "start";
+        }) 
+        .text(function(d) { return d.data.name; });
 
       nodeUpdate.transition()
         .duration(duration)
