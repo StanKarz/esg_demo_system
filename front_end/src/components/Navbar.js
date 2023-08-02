@@ -1,10 +1,8 @@
-// NavbarComponent.js
-
-import React from 'react';
-import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap';
-import './navbar.css';
-import { Link } from 'react-router-dom';
-import { LinkContainer } from 'react-router-bootstrap';
+import React from "react";
+import { Navbar, Nav, NavDropdown } from "react-bootstrap";
+import "./navbar.css";
+import { Link } from "react-router-dom";
+import { LinkContainer } from "react-router-bootstrap";
 
 function NavbarComponent() {
   return (
@@ -12,19 +10,27 @@ function NavbarComponent() {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav>
-          <Container className="px-3">
-            <Link className="nav-link" to="/">Home</Link>
-          </Container>
-          <Container className="px-3">
-            <Link className="nav-link" to="/about">About</Link>
-          </Container>
-          <Container className="px-3">
-            <Link className="nav-link" to="/contact">Contact</Link>
-          </Container>
-          <Container className="px-3">
-            <Link className="nav-link" to="/companies">Companies</Link>
-          </Container>
-          <Container className="px-3">
+          <div className="px-3">
+            <Link className="nav-link" to="/">
+              Home
+            </Link>
+          </div>
+          <div className="px-3">
+            <Link className="nav-link" to="/single">
+              Single Report Visualisation
+            </Link>
+          </div>
+          <div className="px-3">
+            <Link className="nav-link" to="/multi">
+              Multi-report Comparison
+            </Link>
+          </div>
+          <div className="px-3">
+            <Link className="nav-link" to="/companies">
+              Companies
+            </Link>
+          </div>
+          <div className="px-3">
             <NavDropdown title="Visualisations" id="nav-dropdown">
               <LinkContainer to="/visualisations/report_structure">
                 <NavDropdown.Item>Report structure</NavDropdown.Item>
@@ -42,7 +48,7 @@ function NavbarComponent() {
                 <NavDropdown.Item>Topic Taxonomy</NavDropdown.Item>
               </LinkContainer>
             </NavDropdown>
-          </Container>
+          </div>
         </Nav>
       </Navbar.Collapse>
     </Navbar>
