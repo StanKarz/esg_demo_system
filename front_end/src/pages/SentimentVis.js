@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import {
   LineChart,
   Line,
@@ -15,8 +14,7 @@ import {
 import Modal from "react-modal";
 import "../styles/sentiment.css";
 
-function SentimentVis() {
-  const { filename } = useParams(); // Get filename from URL parameters
+function SentimentVis({ filename }) {
   const [sentimentData, setSentimentData] = useState(null);
   const [selectedSentiments, setSelectedSentiments] = useState(["compound"]); // Initialize with compound sentiment only
   const [isModalOpen, setIsModalOpen] = useState(false);
