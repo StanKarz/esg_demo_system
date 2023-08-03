@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { CircularProgress, Box, Typography } from "@mui/material";
-import Iframe from "react-iframe";
 
 function Topics() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -36,7 +35,7 @@ function Topics() {
       {loading ? (
         <Box
           style={{
-            position: "absolute", // Add this line
+            position: "fixed",
             top: 0,
             bottom: 0,
             left: 0,
@@ -63,10 +62,15 @@ function Topics() {
               <button onClick={uploadHandler}>Upload</button>
             </>
           ) : (
-            <Iframe
-              url={`http://localhost:3000/topics-data/${fileName}.html`}
+            <object
+              data={`http://localhost:3000/topics-data/${fileName}.html`}
               width="100%"
-              styles={{ position: "relative", top: "60px", left: "0" }}
+              height="100%"
+              style={{
+                position: "relative",
+                height: "calc(100vh)",
+              }}
+              aria-label="Embedded content"
             />
           )}
         </>

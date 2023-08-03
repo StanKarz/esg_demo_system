@@ -2,6 +2,8 @@ import React from "react";
 import ReportStructure from "./ReportStructure";
 import Topics from "./Topics";
 import SentimentAnalysis from "./SentimentAnalysis";
+import WordFrequency from "./WordFrequency";
+import TopicTaxonomy from "./TopicTaxonomy";
 
 const styles = {
   container: {
@@ -50,8 +52,12 @@ const SingleReportVisualisation = () => {
       <div style={styles.row}>
         <SentimentAnalysis />
       </div>
-      <div style={styles.row}>Row 4 Placeholder Component</div>
-      <div style={styles.row}>Row 5 Placeholder Component</div>
+      <div style={styles.row}>
+        <WordFrequency />
+      </div>
+      <div style={styles.row}>
+        <TopicTaxonomy />
+      </div>
     </div>
   );
 };
