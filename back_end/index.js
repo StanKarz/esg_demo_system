@@ -4,15 +4,8 @@ const crypto = require("crypto");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
-app.use(
-  cors({
-    origin: "*", // allow to server to accept request from different origin
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true, // allow session cookie from browser to pass through
-  })
-);
+app.use(cors({ origin: "*" }));
 app.use(express.json());
-
 const multer = require("multer");
 const childProcess = require("child_process");
 const path = require("path");
@@ -301,4 +294,5 @@ app.post("/upload-lda", upload.single("file"), (req, res) => {
 
 app.use("/visualisations", express.static("visualisations"));
 
-app.listen(3000, () => console.log("Listening on port 3000"));
+const server = app.listen(3000, () => console.log("Listening on port 3000"));
+server.timeout = 500000; // This is the timeout in milliseconds

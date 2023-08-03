@@ -1,4 +1,6 @@
 import React from "react";
+import ReportStructure from "./ReportStructure";
+import Topics from "./Topics";
 
 const styles = {
   container: {
@@ -6,7 +8,7 @@ const styles = {
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    height: "calc(100vh - 60px)", // Assuming navbar height is 60px.
+    minHeight: "calc(100vh - 60px)", // change from height to minHeight
     textAlign: "center",
     backgroundColor: "#F7F7F7",
     color: "#333",
@@ -38,8 +40,12 @@ const SinglePageVisualisation = () => {
       <p style={styles.paragraph}>
         This is the Single Report Visualisation page.
       </p>
-      <div style={styles.row}>Row 1 Placeholder Component</div>
-      <div style={styles.row}>Row 2 Placeholder Component</div>
+      <div style={styles.row}>
+        <ReportStructure />
+      </div>
+      <div style={styles.row}>
+        <Topics />
+      </div>
       <div style={styles.row}>Row 3 Placeholder Component</div>
       <div style={styles.row}>Row 4 Placeholder Component</div>
       <div style={styles.row}>Row 5 Placeholder Component</div>

@@ -31,7 +31,7 @@ function ReportStructure() {
 
   return (
     <div>
-      <h1>Upload your JSONL file</h1>
+      <h1>Upload your PDF report file</h1>
       <form onSubmit={submitForm}>
         <input type="file" onChange={(e) => setFile(e.target.files[0])} />
         <button type="submit">Upload</button>

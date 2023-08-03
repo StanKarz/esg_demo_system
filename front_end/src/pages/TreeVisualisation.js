@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as d3 from "d3";
-import { useParams } from "react-router-dom";
 import "../styles/TreeDiagram.css";
 
 function TreeVisualisation({ filename }) {
@@ -275,13 +274,46 @@ function TreeVisualisation({ filename }) {
     };
   };
 
+  // const styles = {
+  //   visualisationContainer: {
+  //     display: "flex",
+  //     flexDirection: "column",
+  //     alignItems: "center",
+  //     width: "100%",
+  //     overflow: "auto",
+  //   },
+  //   visualisation: {
+  //     marginTop: "1em",
+  //     display: "flex",
+  //     flexDirection: "column",
+  //     alignItems: "center",
+  //     width: "100%",
+  //   },
+  //   svgContainer: {
+  //     display: "flex",
+  //     justifyContent: "center",
+  //     width: "100%",
+  //     maxHeight: "100vh",
+  //     overflow: "auto",
+  //   },
+  // };
+
   return (
-    <div className="visualisation">
-      {loading ? <div>Loading...</div> : null}
+    <div
+      className="visualisation-container"
+      // style={styles.visualisationContainer}
+    >
       <div
-        className={`svg-container ${loading ? "hidden" : ""}`}
-        ref={ref}
-      ></div>
+        className="visualisation"
+        // style={styles.visualisation}
+      >
+        {loading ? <div>Loading...</div> : null}
+        <div
+          className={`svg-container ${loading ? "hidden" : ""}`}
+          ref={ref}
+          // style={styles.svgContainer}
+        ></div>
+      </div>
     </div>
   );
 }
