@@ -1,6 +1,7 @@
 import React from "react";
 import ReportStructure from "./ReportStructure";
 import Topics from "./Topics";
+import SentimentAnalysis from "./SentimentAnalysis";
 
 const styles = {
   container: {
@@ -33,7 +34,7 @@ const styles = {
   },
 };
 
-const SinglePageVisualisation = () => {
+const SingleReportVisualisation = () => {
   return (
     <div style={styles.container}>
       <h1 style={styles.heading}>Single Page Visualisation</h1>
@@ -46,11 +47,13 @@ const SinglePageVisualisation = () => {
       <div style={styles.row}>
         <Topics />
       </div>
-      <div style={styles.row}>Row 3 Placeholder Component</div>
+      <div style={styles.row}>
+        <SentimentAnalysis />
+      </div>
       <div style={styles.row}>Row 4 Placeholder Component</div>
       <div style={styles.row}>Row 5 Placeholder Component</div>
     </div>
   );
 };
 
-export default SinglePageVisualisation;
+export default SingleReportVisualisation;
