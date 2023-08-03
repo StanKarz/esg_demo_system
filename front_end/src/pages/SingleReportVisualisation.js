@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import ReportStructure from "./ReportStructure";
 import Topics from "./Topics";
 import SentimentAnalysis from "./SentimentAnalysis";
 import WordFrequency from "./WordFrequency";
 import TopicTaxonomy from "./TopicTaxonomy";
+
+import axios from "axios";
 
 const styles = {
   container: {
@@ -24,7 +26,7 @@ const styles = {
   },
   paragraph: {
     fontSize: "1.5em",
-    marginBottom: "40px",
+    marginBottom: "20px",
   },
   row: {
     width: "100%",
@@ -34,17 +36,80 @@ const styles = {
     backgroundColor: "#FFF",
     boxShadow: "0 4px 6px rgba(0, 0, 0, .1)",
   },
+  form: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: "10px",
+    margin: "20px 0",
+  },
+  input: {
+    padding: "10px",
+    borderRadius: "4px",
+    border: "1px solid #ccc",
+    width: "100%", // Adjust the width of the input field
+  },
+  button: {
+    padding: "10px 20px",
+    borderRadius: "4px",
+    border: "none",
+    backgroundColor: "#3498db",
+    color: "white",
+    cursor: "pointer",
+    fontSize: "16px",
+    transition: "background-color 0.2s",
+    ":hover": {
+      backgroundColor: "#2980b9",
+    },
+  },
 };
 
 const SingleReportVisualisation = () => {
+  const [file, setFile] = useState(null);
+  const [filename, setFilename] = useState(null); // Add state to hold filename
+  const [loading, setLoading] = useState(false);
+
+  const submitForm = (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    setLoading(true);
+
+    axios
+      .post("http://localhost:3000/upload-tree", formData)
+      .then((response) => {
+        console.log(response);
+        const { filename } = response.data;
+        setFilename(filename); // set the filename in state
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("There was an error!", error);
+        setLoading(false);
+      });
+  };
+
   return (
     <div style={styles.container}>
-      <h1 style={styles.heading}>Single Page Visualisation</h1>
+      <h1 style={styles.heading}>Single Report Visualisation</h1>
       <p style={styles.paragraph}>
-        This is the Single Report Visualisation page.
+        This is the Single Report Visualisation page. Upload your ESG report
+        below to see several visualisations.
       </p>
+      <form onSubmit={submitForm} style={styles.form}>
+        <input
+          type="file"
+          onChange={(e) => setFile(e.target.files[0])}
+          style={styles.input}
+        />
+        <button type="submit" style={styles.button}>
+          Upload
+        </button>
+      </form>
       <div style={styles.row}>
-        <ReportStructure />
+        <ReportStructure filename={filename} loading={loading} />
       </div>
       <div style={styles.row}>
         <Topics />
