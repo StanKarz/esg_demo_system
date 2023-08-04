@@ -91,6 +91,7 @@ const SingleReportVisualisation = () => {
   const fileInput = useRef();
   const [filenameTree, setFilenameTree] = useState(null); // Add state to hold filename
   const [filenameLDA, setFilenameLDA] = useState(null);
+  const [filenameWordcloud, setFilenameWordcloud] = useState(null);
   const [data, setData] = useState(null); // processed data
 
   const [loading, setLoading] = useState(false);
@@ -101,8 +102,11 @@ const SingleReportVisualisation = () => {
     const formData = new FormData();
     formData.append("file", file);
 
-    const sentimentFormData = new FormData();
-    sentimentFormData.append("pdf", fileInput.current.files[0]);
+    const formDataPDF = new FormData();
+    formDataPDF.append("pdf", file);
+
+    console.log(formData);
+    console.log(formDataPDF);
 
     setLoading(true);
 
@@ -119,7 +123,7 @@ const SingleReportVisualisation = () => {
       // Second API call
       const responseSentiment = await axios.post(
         "http://localhost:3000/upload-sentiment",
-        sentimentFormData
+        formDataPDF
       );
       console.log(responseSentiment.data);
       setData(responseSentiment.data.path);
@@ -132,6 +136,14 @@ const SingleReportVisualisation = () => {
       console.log(responseTree);
       const { filename } = responseTree.data;
       setFilenameTree(filename);
+
+      // Fourth API call
+      const responseWordcloud = await axios.post(
+        "http://localhost:3000/upload-wordcloud",
+        formDataPDF
+      );
+      console.log(responseWordcloud);
+      setFilenameWordcloud(file.name);
     } catch (error) {
       console.error("There was an error: ", error);
     } finally {
@@ -167,7 +179,7 @@ const SingleReportVisualisation = () => {
         <SentimentAnalysis filename={data} loading={loading} />
       </div>
       <div style={styles.row}>
-        <WordFrequency />
+        <WordFrequency filename={filenameWordcloud} loading={loading} />
       </div>
       <div style={styles.row}>
         <TopicTaxonomy />

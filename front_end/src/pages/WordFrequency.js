@@ -2,47 +2,48 @@ import React, { useState } from "react";
 import WordCloud from "./WordCloud";
 import BubbleChart from "./BubbleChart";
 
-function WordFrequency() {
-  const [selectedFile, setSelectedFile] = useState();
-  const [filepath, setFilepath] = useState();
+function WordFrequency({ filename, loading }) {
+  // const [selectedFile, setSelectedFile] = useState();
+  // const [filepath, setFilepath] = useState();
   const [selectedCategory, setSelectedCategory] = useState("environmental");
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
+  // const handleFileChange = (event) => {
+  //   setSelectedFile(event.target.files[0]);
+  // };
 
-  const handleFileUpload = () => {
-    if (!selectedFile) {
-      alert("No file selected!");
-      return;
-    }
+  // const handleFileUpload = () => {
+  //   if (!selectedFile) {
+  //     alert("No file selected!");
+  //     return;
+  //   }
 
-    const formData = new FormData();
-    formData.append("pdf", selectedFile);
+  //   const formData = new FormData();
+  //   formData.append("pdf", selectedFile);
 
-    fetch("http://localhost:3000/upload-wordcloud", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setFilepath(selectedFile.name);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
+  //   fetch("http://localhost:3000/upload-wordcloud", {
+  //     method: "POST",
+  //     body: formData,
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       setFilepath(selectedFile.name);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //     });
+  // };
 
   return (
     <div>
       <h1>Word Frequency Visualisation</h1>
-      {!filepath && (
+      {/* {!filepath && (
         <>
           <input type="file" accept=".pdf" onChange={handleFileChange} />
           <button onClick={handleFileUpload}>Upload</button>
         </>
-      )}
-      {filepath && (
+      )} */}
+      {loading && <p>Loading...</p>}
+      {filename && (
         <>
           <select
             value={selectedCategory}
@@ -53,8 +54,8 @@ function WordFrequency() {
             <option value="governance">Governance Words</option>
           </select>
           <div style={{ display: "block" }}>
-            <WordCloud filepath={filepath} category={selectedCategory} />
-            <BubbleChart filepath={filepath} />
+            <WordCloud filepath={filename} category={selectedCategory} />
+            <BubbleChart filepath={filename} />
           </div>
         </>
       )}
