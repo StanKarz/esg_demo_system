@@ -2,34 +2,36 @@ import React, { useRef, useState } from "react";
 import { CircularProgress, Box, Typography } from "@mui/material";
 import SentimentVis from "./SentimentVis";
 
-function SentimentAnalysis() {
-  const fileInput = useRef();
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(null); // processed data
+function SentimentAnalysis({ filename, loading }) {
+  // const fileInput = useRef();
+  // const [loading, setLoading] = useState(false);
+  // const [data, setData] = useState(null); // processed data
 
-  const handleUpload = async (event) => {
-    event.preventDefault();
+  // const handleUpload = async (event) => {
+  //   event.preventDefault();
 
-    const formData = new FormData();
-    formData.append("pdf", fileInput.current.files[0]);
+  //   const formData = new FormData();
+  //   formData.append("pdf", fileInput.current.files[0]);
 
-    setLoading(true);
+  //   setLoading(true);
 
-    const response = await fetch("http://localhost:3000/upload-sentiment", {
-      method: "POST",
-      body: formData,
-    });
-    const responseData = await response.json();
-    console.log(responseData);
+  //   const response = await fetch("http://localhost:3000/upload-sentiment", {
+  //     method: "POST",
+  //     body: formData,
+  //   });
+  //   const responseData = await response.json();
+  //   console.log(responseData);
 
-    setLoading(false);
-    setData(responseData.path);
-  };
+  //   setLoading(false);
+  //   setData(responseData.path);
+  // };
 
   return (
     <div style={{ position: "relative" }}>
       <h1>Sentiment Analysis</h1>
-      {loading ? (
+      {loading && <p>Loading...</p>}
+      {filename && <SentimentVis filename={filename} />}
+      {/* {loading ? (
         <Box
           style={{
             position: "fixed",
@@ -58,7 +60,7 @@ function SentimentAnalysis() {
           <input type="file" accept=".pdf" ref={fileInput} required />
           <button type="submit">Upload</button>
         </form>
-      )}
+      )} */}
     </div>
   );
 }

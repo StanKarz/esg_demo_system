@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import ReportStructure from "./ReportStructure";
 import Topics from "./Topics";
 import SentimentAnalysis from "./SentimentAnalysis";
@@ -88,8 +88,10 @@ const styles = {
 
 const SingleReportVisualisation = () => {
   const [file, setFile] = useState(null);
+  const fileInput = useRef();
   const [filenameTree, setFilenameTree] = useState(null); // Add state to hold filename
   const [filenameLDA, setFilenameLDA] = useState(null);
+  const [data, setData] = useState(null); // processed data
 
   const [loading, setLoading] = useState(false);
 
@@ -99,6 +101,9 @@ const SingleReportVisualisation = () => {
     const formData = new FormData();
     formData.append("file", file);
 
+    const sentimentFormData = new FormData();
+    sentimentFormData.append("pdf", fileInput.current.files[0]);
+
     setLoading(true);
 
     try {
@@ -107,17 +112,26 @@ const SingleReportVisualisation = () => {
         "http://localhost:3000/upload-lda",
         formData
       );
+      console.log(responseLda);
       const name = responseLda.data.filename.split(".")[0];
       setFilenameLDA(name);
 
       // Second API call
+      const responseSentiment = await axios.post(
+        "http://localhost:3000/upload-sentiment",
+        sentimentFormData
+      );
+      console.log(responseSentiment.data);
+      setData(responseSentiment.data.path);
+
+      // Third API call
       const responseTree = await axios.post(
         "http://localhost:3000/upload-tree",
         formData
       );
       console.log(responseTree);
       const { filename } = responseTree.data;
-      setFilenameTree(filename); // set the filename in state
+      setFilenameTree(filename);
     } catch (error) {
       console.error("There was an error: ", error);
     } finally {
@@ -137,6 +151,7 @@ const SingleReportVisualisation = () => {
           type="file"
           onChange={(e) => setFile(e.target.files[0])}
           style={styles.input}
+          ref={fileInput}
         />
         <button type="submit" style={styles.button}>
           Upload
@@ -149,7 +164,7 @@ const SingleReportVisualisation = () => {
         <Topics filename={filenameLDA} loading={loading} />
       </div>
       <div style={styles.row}>
-        <SentimentAnalysis />
+        <SentimentAnalysis filename={data} loading={loading} />
       </div>
       <div style={styles.row}>
         <WordFrequency />
