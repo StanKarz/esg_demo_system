@@ -64,12 +64,36 @@ const styles = {
   },
 };
 
+// const submitForm = (event) => {
+//   event.preventDefault();
+
+//   const formData = new FormData();
+//   formData.append("file", file);
+
+//   setLoading(true);
+
+//   axios
+//     .post("http://localhost:3000/upload-tree", formData)
+//     .then((response) => {
+//       console.log(response);
+//       const { filename } = response.data;
+//       setFilename(filename); // set the filename in state
+//       setLoading(false);
+//     })
+//     .catch((error) => {
+//       console.error("There was an error!", error);
+//       setLoading(false);
+//     });
+// };
+
 const SingleReportVisualisation = () => {
   const [file, setFile] = useState(null);
-  const [filename, setFilename] = useState(null); // Add state to hold filename
+  const [filenameTree, setFilenameTree] = useState(null); // Add state to hold filename
+  const [filenameLDA, setFilenameLDA] = useState(null);
+
   const [loading, setLoading] = useState(false);
 
-  const submitForm = (event) => {
+  const submitForm = async (event) => {
     event.preventDefault();
 
     const formData = new FormData();
@@ -77,18 +101,28 @@ const SingleReportVisualisation = () => {
 
     setLoading(true);
 
-    axios
-      .post("http://localhost:3000/upload-tree", formData)
-      .then((response) => {
-        console.log(response);
-        const { filename } = response.data;
-        setFilename(filename); // set the filename in state
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("There was an error!", error);
-        setLoading(false);
-      });
+    try {
+      // First API call
+      const responseLda = await axios.post(
+        "http://localhost:3000/upload-lda",
+        formData
+      );
+      const name = responseLda.data.filename.split(".")[0];
+      setFilenameLDA(name);
+
+      // Second API call
+      const responseTree = await axios.post(
+        "http://localhost:3000/upload-tree",
+        formData
+      );
+      console.log(responseTree);
+      const { filename } = responseTree.data;
+      setFilenameTree(filename); // set the filename in state
+    } catch (error) {
+      console.error("There was an error: ", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -109,10 +143,10 @@ const SingleReportVisualisation = () => {
         </button>
       </form>
       <div style={styles.row}>
-        <ReportStructure filename={filename} loading={loading} />
+        <ReportStructure filename={filenameTree} loading={loading} />
       </div>
       <div style={styles.row}>
-        <Topics />
+        <Topics filename={filenameLDA} loading={loading} />
       </div>
       <div style={styles.row}>
         <SentimentAnalysis />
