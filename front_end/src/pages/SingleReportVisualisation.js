@@ -64,27 +64,9 @@ const styles = {
   },
 };
 
-// const submitForm = (event) => {
-//   event.preventDefault();
-
-//   const formData = new FormData();
-//   formData.append("file", file);
-
-//   setLoading(true);
-
-//   axios
-//     .post("http://localhost:3000/upload-tree", formData)
-//     .then((response) => {
-//       console.log(response);
-//       const { filename } = response.data;
-//       setFilename(filename); // set the filename in state
-//       setLoading(false);
-//     })
-//     .catch((error) => {
-//       console.error("There was an error!", error);
-//       setLoading(false);
-//     });
-// };
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 const SingleReportVisualisation = () => {
   const [file, setFile] = useState(null);
@@ -105,13 +87,38 @@ const SingleReportVisualisation = () => {
     const formDataPDF = new FormData();
     formDataPDF.append("pdf", file);
 
-    console.log(formData);
-    console.log(formDataPDF);
+    // console.log(formData);
+    // console.log(formDataPDF);
+
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ", " + pair[1]);
+    }
+
+    // Log formDataPDF
+    for (let pair of formDataPDF.entries()) {
+      console.log(pair[0] + ", " + pair[1]);
+    }
 
     setLoading(true);
 
     try {
       // First API call
+      const responseTree = await axios.post(
+        "http://localhost:3000/upload-tree",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log(responseTree);
+      const { filename } = responseTree.data;
+      setFilenameTree(filename);
+
+      await sleep(1000);
+
+      // Second API call
       const responseLda = await axios.post(
         "http://localhost:3000/upload-lda",
         formData
@@ -120,7 +127,7 @@ const SingleReportVisualisation = () => {
       const name = responseLda.data.filename.split(".")[0];
       setFilenameLDA(name);
 
-      // Second API call
+      // Third API call
       const responseSentiment = await axios.post(
         "http://localhost:3000/upload-sentiment",
         formDataPDF
@@ -128,14 +135,7 @@ const SingleReportVisualisation = () => {
       console.log(responseSentiment.data);
       setData(responseSentiment.data.path);
 
-      // Third API call
-      const responseTree = await axios.post(
-        "http://localhost:3000/upload-tree",
-        formData
-      );
-      console.log(responseTree);
-      const { filename } = responseTree.data;
-      setFilenameTree(filename);
+      await sleep(1000);
 
       // Fourth API call
       const responseWordcloud = await axios.post(
@@ -181,9 +181,9 @@ const SingleReportVisualisation = () => {
       <div style={styles.row}>
         <WordFrequency filename={filenameWordcloud} loading={loading} />
       </div>
-      <div style={styles.row}>
+      {/* <div style={styles.row}>
         <TopicTaxonomy />
-      </div>
+      </div> */}
     </div>
   );
 };

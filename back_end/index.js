@@ -4,7 +4,7 @@ const crypto = require("crypto");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
-app.use(cors({ origin: "*" }));
+app.use(cors());
 app.use(express.json());
 const multer = require("multer");
 const childProcess = require("child_process");
@@ -110,20 +110,26 @@ app.get("/search", async (req, res) => {
 
 // File upload endpoint
 app.post("/upload-tree", upload.single("file"), (req, res) => {
-  console.log(req.file); // Log uploaded file metadata to console
+  console.log("IN THE ENDPOINT: ", req.file); // Log uploaded file metadata to console
   const originalFileName = path.parse(req.file.originalname).name;
   const outputFile = `${originalFileName}_output.json`;
+
+  // Log the paths
+  console.log("Input file path:", req.file.path);
+  console.log("Output file path:", outputFile);
   // Now spawn the Python child process to process the uploaded file
   let pyProcess = childProcess.spawn("python", [
-    "tree_vis/pdf_to_tree_2.py",
+    "tree_vis/pdf_to_tree.py",
     req.file.path,
     outputFile,
   ]);
 
+  console.log("Python process spawned"); // Debugging line
+
   let pythonOutput = "";
 
   pyProcess.stdout.on("data", (data) => {
-    console.log(`Python script output: ${data}`);
+    // console.log(`Python script output: ${data}`);
     pythonOutput += data.toString();
   });
 
@@ -141,6 +147,7 @@ app.post("/upload-tree", upload.single("file"), (req, res) => {
         filename: outputFile,
       });
     }
+    fs.unlinkSync(req.file.path);
   });
 });
 
@@ -231,7 +238,7 @@ app.post("/upload-sentiment", upload.single("pdf"), (req, res) => {
       console.log(`python script exited with code ${code}`);
       res.json({ error: "Failed to process file" });
     } else {
-      console.log(result); // Add this line
+      // console.log(result); // Add this line
       try {
         const sentimentData = JSON.parse(result);
         // Include the file path in the response
@@ -247,6 +254,7 @@ app.post("/upload-sentiment", upload.single("pdf"), (req, res) => {
         res.json({ error: "Failed to parse response" });
       }
     }
+    fs.unlinkSync(req.file.path);
   });
 });
 
@@ -271,7 +279,7 @@ app.post("/upload-lda", upload.single("file"), (req, res) => {
   ]);
 
   pyProcess.stdout.on("data", (data) => {
-    console.log(`Python script output: ${data}`);
+    // console.log(`Python script output: ${data}`);
   });
 
   pyProcess.stderr.on("data", (data) => {
@@ -289,6 +297,7 @@ app.post("/upload-lda", upload.single("file"), (req, res) => {
         filename: fileName,
       });
     }
+    fs.unlinkSync(req.file.path);
   });
 });
 

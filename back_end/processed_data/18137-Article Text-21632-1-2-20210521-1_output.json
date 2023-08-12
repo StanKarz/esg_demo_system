@@ -1,0 +1,302 @@
+{
+  "name": "root",
+  "children": [
+    {
+      "name": "ceed",
+      "children": []
+    },
+    {
+      "name": "h In",
+      "children": []
+    },
+    {
+      "name": "eb a",
+      "children": []
+    },
+    {
+      "name": "2021)",
+      "children": []
+    },
+    {
+      "name": "ESG Tracker: Unbiased and Explainable ESG Proﬁle f...",
+      "children": [
+        {
+          "name": "Elaheh Momeni",
+          "children": [
+            {
+              "name": "1,2",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": ", Constantin Fraenkel",
+          "children": [
+            {
+              "name": "2",
+              "children": []
+            },
+            {
+              "name": "University of Vienna, Austria",
+              "children": [
+                {
+                  "name": "1",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "eMentalist Labs, Austria",
+              "children": [
+                {
+                  "name": "1",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": ", Patrick Kiss",
+          "children": [
+            {
+              "name": "1",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": ", Andreas Burgmann",
+          "children": [
+            {
+              "name": "1",
+              "children": []
+            },
+            {
+              "name": "Abstract",
+              "children": [
+                {
+                  "name": "Environmental, social, and governance (ESG) criter...",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Introduction",
+          "children": [
+            {
+              "name": "In order to make our world a better place, while a...",
+              "children": [
+                {
+                  "name": "Copyright © 2021, Association for the Advancement ...",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "We propose the ESG tracker system, an approach to ...",
+              "children": []
+            },
+            {
+              "name": "Our proposed system uses computational methods to ...",
+              "children": []
+            },
+            {
+              "name": "Applications and Impact",
+              "children": [
+                {
+                  "name": "1",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Technical Speciﬁcations and Requirements",
+          "children": [
+            {
+              "name": "Given the nature of this domain and its unique voc...",
+              "children": []
+            },
+            {
+              "name": "Nevertheless, it is important to note that besides...",
+              "children": []
+            },
+            {
+              "name": "Potential Biases:",
+              "children": [
+                {
+                  "name": "1",
+                  "children": []
+                },
+                {
+                  "name": "https://www.cfainstitute.org/en/research/esg-inves...",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "Figure 1: Starting dashboard. Stack bar chart show...",
+              "children": []
+            },
+            {
+              "name": "have higher ratings, (2) Geographic bias, companie...",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "ESG Tracker Demo",
+          "children": [
+            {
+              "name": "Data Collection",
+              "children": [
+                {
+                  "name": "we collect tweets with the help of the Twitter Str...",
+                  "children": []
+                },
+                {
+                  "name": "News platforms",
+                  "children": []
+                },
+                {
+                  "name": "in order to retrieve online news media articles, w...",
+                  "children": []
+                },
+                {
+                  "name": "To monitor ESG relevant data, we continuously coll...",
+                  "children": []
+                },
+                {
+                  "name": "Twitter",
+                  "children": []
+                },
+                {
+                  "name": "precisely, we developed a crawler that searches fo...",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "Main Features",
+              "children": [
+                {
+                  "name": "We can summarise the main features of the system a...",
+                  "children": []
+                },
+                {
+                  "name": "The system crawls a large amount of data close to ...",
+                  "children": []
+                },
+                {
+                  "name": "The main dashboard, shown in Figure 1, enables use...",
+                  "children": []
+                },
+                {
+                  "name": "Scalability and Real-time:",
+                  "children": []
+                },
+                {
+                  "name": "Unbiasd:",
+                  "children": []
+                },
+                {
+                  "name": "Transparency and Explainability:",
+                  "children": []
+                },
+                {
+                  "name": "The upper left part of Figure 1 shows the spider c...",
+                  "children": []
+                },
+                {
+                  "name": "Figure 2: ESG matching for each company and clicka...",
+                  "children": []
+                },
+                {
+                  "name": "relevant articles at the level of the articles’ so...",
+                  "children": []
+                },
+                {
+                  "name": "Semantic and Trend Analysis:",
+                  "children": []
+                },
+                {
+                  "name": "The system also provides sentiment and emotion ori...",
+                  "children": []
+                },
+                {
+                  "name": "Furthermore, in the future version of the system i...",
+                  "children": []
+                },
+                {
+                  "name": "K. 2020. Moral Framing and Ideological Bias of New...",
+                  "children": []
+                },
+                {
+                  "name": ". Momeni, E.; Karunasekera, S.; Goyal, P.; and Ler...",
+                  "children": []
+                },
+                {
+                  "name": "SocInfo",
+                  "children": []
+                },
+                {
+                  "name": "International AAAI Conference on Web and Social Me...",
+                  "children": []
+                },
+                {
+                  "name": ". URL http://eprints.cs.univie.ac.at/5660/. Noboa,...",
+                  "children": []
+                },
+                {
+                  "name": "Companion of the The Web Conference 2018 on The We...",
+                  "children": []
+                },
+                {
+                  "name": ", 1277–1285. ACM. doi: 10.1145/3184558.3191567. UR...",
+                  "children": []
+                },
+                {
+                  "name": "National Bureau of Economic Research 2020",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "References",
+          "children": [
+            {
+              "name": "Devlin, J.; Chang, M.; Lee, K.; and Toutanova, K. ...",
+              "children": []
+            },
+            {
+              "name": "abs/1810.04805. URL http://arxiv.org/abs/1810.0480...",
+              "children": []
+            },
+            {
+              "name": "CoRR",
+              "children": []
+            },
+            {
+              "name": "Doyle, T. M. 2018. Ratings that don’t rate. The su...",
+              "children": []
+            },
+            {
+              "name": "American Council for Capital Formation 2018",
+              "children": []
+            },
+            {
+              "name": "Mokhberian, N.; Abeliuk, A.; Cummings, P.; and Ler...",
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

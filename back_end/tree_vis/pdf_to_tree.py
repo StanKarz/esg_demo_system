@@ -1364,11 +1364,27 @@ def make_tree(data, node_id, tree):
     return tree
 
 
+def make_tree_report(data, node_id, tree):
+    children = [item for item in data if item['parent_id'] == node_id]
+    if children:
+        tree['children'] = []
+        for child in children:
+            child_name = child['text_str'][:50] + \
+                '...' if len(child['text_str']) > 50 else child['text_str']
+            child_node = {'name': child_name, 'children': []}
+            tree['children'].append(child_node)
+            make_tree_report(data, child['self_id'], child_node)
+    return tree
+
+
 def main(input_file, output_file):
     config = get_config()
     pdf_parser = PDFParser(config=config)
 
     report, toc, metadata = pdf_parser.parse_one_pdf_to_tree_simple(input_file)
+
+    flat_report = [item for sublist in report for item in sublist]
+    print(flat_report)
 
     print(toc)
 
@@ -1383,10 +1399,21 @@ def main(input_file, output_file):
         tree = {'name': root_node['name'], 'children': []}
         tree = make_tree(toc_dicts, root_node['toc_id'], tree)
     else:
-        # Handle the case where no root node was found
+        # Handle the case where no root node was found in the table of contents
         # This could be setting a default root node, logging a warning, etc.
-        print('No root node found in the table of contents')
-        tree = {'name': 'default', 'children': []}  # Example default tree
+        print('No root node found in the table of contents. Falling back to report data...')
+        root_nodes_report = [
+            item for item in flat_report if item['type'] == 'root']
+
+        if root_nodes_report:
+            root_node_report = root_nodes_report[0]
+            tree = {'name': root_node_report['text_str'], 'children': []}
+            # Use flat_report here
+            tree = make_tree_report(
+                flat_report, root_node_report['self_id'], tree)
+        else:
+            print('No root node found in the report data')
+            tree = {'name': 'default', 'children': []}  # Example default tree
 
     # Write to JSON file
     with open(output_file, 'w', encoding='utf-8') as f:
