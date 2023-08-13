@@ -3,7 +3,6 @@ import ReportStructure from "./ReportStructure";
 import Topics from "./Topics";
 import SentimentAnalysis from "./SentimentAnalysis";
 import WordFrequency from "./WordFrequency";
-import TopicTaxonomy from "./TopicTaxonomy";
 
 import axios from "axios";
 
@@ -13,7 +12,7 @@ const styles = {
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    minHeight: "calc(100vh - 60px)", // change from height to minHeight
+    minHeight: "calc(100vh - 60px)",
     textAlign: "center",
     backgroundColor: "#F7F7F7",
     color: "#333",
@@ -47,7 +46,7 @@ const styles = {
     padding: "10px",
     borderRadius: "4px",
     border: "1px solid #ccc",
-    width: "100%", // Adjust the width of the input field
+    width: "100%",
   },
   button: {
     padding: "10px 20px",
@@ -61,6 +60,15 @@ const styles = {
     ":hover": {
       backgroundColor: "#2980b9",
     },
+  },
+  descriptionContainer: {
+    width: "100%",
+    padding: "10px",
+    borderRadius: "5px",
+    backgroundColor: "#EFEFEF", // Lighter shade for distinction
+    boxShadow: "0 2px 4px rgba(0, 0, 0, .1)",
+    marginBottom: "20px",
+    fontSize: "1.2em",
   },
 };
 
@@ -87,14 +95,10 @@ const SingleReportVisualisation = () => {
     const formDataPDF = new FormData();
     formDataPDF.append("pdf", file);
 
-    // console.log(formData);
-    // console.log(formDataPDF);
-
     for (let pair of formData.entries()) {
       console.log(pair[0] + ", " + pair[1]);
     }
 
-    // Log formDataPDF
     for (let pair of formDataPDF.entries()) {
       console.log(pair[0] + ", " + pair[1]);
     }
@@ -172,8 +176,30 @@ const SingleReportVisualisation = () => {
       <div style={styles.row}>
         <ReportStructure filename={filenameTree} loading={loading} />
       </div>
+      <div style={styles.descriptionContainer}>
+        This visualisation provides a quick and interactive overview of the
+        structure and contents of the uploaded ESG report and how they relate in
+        an hierarchical manner, nodes which have children are expandable and
+        collapsable. By understanding the structure upfront, you can navigate to
+        desired sections more efficiently, saving time and effort. Expanded
+        nodes are coloured green and white nodes signify leaf nodes which have
+        no more children to expand.
+      </div>
       <div style={styles.row}>
         <Topics filename={filenameLDA} loading={loading} />
+      </div>
+      <div style={styles.descriptionContainer}>
+        This visualisation shows an overview of the topics present within a
+        report. Their size indicates reflects topic prominence and their
+        proximity indicate how closely related they are. You can view the most
+        common words that contribute to each topic and their frequency with
+        respect to the entire report. The adjustable slider for λ determines how
+        terms are ranked for a given topic. For λ=1 terms are ranked purely by
+        their probability within the topic. This means the terms you see are the
+        most probable terms for a given topic, but they might be common across
+        multiple topics. For λ=0 terms are ranked by their distinctiveness or
+        exclusivity to the topic. This means you'll see terms that are unique to
+        a topic, even if they aren't the most probable terms for that topic.
       </div>
       <div style={styles.row}>
         <SentimentAnalysis filename={data} loading={loading} />
@@ -181,9 +207,6 @@ const SingleReportVisualisation = () => {
       <div style={styles.row}>
         <WordFrequency filename={filenameWordcloud} loading={loading} />
       </div>
-      {/* <div style={styles.row}>
-        <TopicTaxonomy />
-      </div> */}
     </div>
   );
 };

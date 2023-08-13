@@ -1400,7 +1400,6 @@ def main(input_file, output_file):
         tree = make_tree(toc_dicts, root_node['toc_id'], tree)
     else:
         # Handle the case where no root node was found in the table of contents
-        # This could be setting a default root node, logging a warning, etc.
         print('No root node found in the table of contents. Falling back to report data...')
         root_nodes_report = [
             item for item in flat_report if item['type'] == 'root']
@@ -1413,7 +1412,7 @@ def main(input_file, output_file):
                 flat_report, root_node_report['self_id'], tree)
         else:
             print('No root node found in the report data')
-            tree = {'name': 'default', 'children': []}  # Example default tree
+            tree = {'name': 'default', 'children': []}
 
     # Write to JSON file
     with open(output_file, 'w', encoding='utf-8') as f:

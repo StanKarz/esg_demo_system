@@ -34,7 +34,6 @@ async function importData() {
   for await (const line of rl) {
     const company = JSON.parse(line);
 
-    // Get the URL of the latest report
     if (company.reports && company.reports.length > 0) {
       company.url = company.reports[0].url;
     }

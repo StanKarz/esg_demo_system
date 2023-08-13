@@ -16,6 +16,11 @@ function NavbarComponent() {
             </Link>
           </div>
           <div className="px-3">
+            <Link className="nav-link" to="/companies">
+              Companies
+            </Link>
+          </div>
+          <div className="px-3">
             <Link className="nav-link" to="/single">
               Single Report Visualisation
             </Link>
@@ -25,29 +30,11 @@ function NavbarComponent() {
               Multi-report Comparison
             </Link>
           </div>
+
           <div className="px-3">
-            <Link className="nav-link" to="/companies">
-              Companies
+            <Link className="nav-link" to="/topic-taxonomy">
+              Topic taxonomy
             </Link>
-          </div>
-          <div className="px-3">
-            <NavDropdown title="Visualisations" id="nav-dropdown">
-              <LinkContainer to="/visualisations/report_structure">
-                <NavDropdown.Item>Report structure</NavDropdown.Item>
-              </LinkContainer>
-              <LinkContainer to="/visualisations/topics">
-                <NavDropdown.Item>ESG Topics</NavDropdown.Item>
-              </LinkContainer>
-              <LinkContainer to="/visualisations/sentiment_analysis">
-                <NavDropdown.Item>Sentiment analysis</NavDropdown.Item>
-              </LinkContainer>
-              <LinkContainer to="/visualisations/word_frequency">
-                <NavDropdown.Item>ESG word frequency</NavDropdown.Item>
-              </LinkContainer>
-              <LinkContainer to="/visualisations/topic_taxonomy">
-                <NavDropdown.Item>Topic Taxonomy</NavDropdown.Item>
-              </LinkContainer>
-            </NavDropdown>
           </div>
         </Nav>
       </Navbar.Collapse>

@@ -26,13 +26,12 @@ app.use(
   express.static(path.join(__dirname, "processed_data"))
 );
 app.use("/uploads", express.static("uploads"));
-// app.use('/topics-data', express.static('topics_data'));
 app.use("/topics-data", express.static(path.join(__dirname, "topics_data")));
 
 // Multer setup
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/"); // Adjust this path to where you want to store your uploaded files
+    cb(null, "uploads/");
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
@@ -63,10 +62,9 @@ const companySchema = new mongoose.Schema({
   ticker: String,
   source_url: String,
   url: String,
-  exchange: String, // Add this
-  company_location: String, // Add this
-  company_website: String, // Add this
-  // ... add other fields as necessary
+  exchange: String,
+  company_location: String,
+  company_website: String,
 });
 
 const Company = mongoose.model("Company", companySchema);
@@ -81,7 +79,7 @@ app.get("/search", async (req, res) => {
 
   console.log(
     `Query parameters received: sectors=${sectors}, exchanges=${exchanges}`
-  ); // Debugging line
+  );
 
   let searchParams = {
     ...(query && { company_name: new RegExp(query, "i") }),
@@ -101,14 +99,14 @@ app.get("/search", async (req, res) => {
     searchParams.exchange = { $in: exchangesRegex };
   }
 
-  console.log(searchParams); // Debugging line: See the final search parameters
+  console.log(searchParams);
 
   const companies = await Company.find(searchParams);
 
   res.json(companies);
 });
 
-// File upload endpoint
+// Report structure visualisation
 app.post("/upload-tree", upload.single("file"), (req, res) => {
   console.log("IN THE ENDPOINT: ", req.file); // Log uploaded file metadata to console
   const originalFileName = path.parse(req.file.originalname).name;
@@ -117,7 +115,7 @@ app.post("/upload-tree", upload.single("file"), (req, res) => {
   // Log the paths
   console.log("Input file path:", req.file.path);
   console.log("Output file path:", outputFile);
-  // Now spawn the Python child process to process the uploaded file
+  // Spawn the Python child process to process the uploaded file
   let pyProcess = childProcess.spawn("python", [
     "tree_vis/pdf_to_tree.py",
     req.file.path,
@@ -129,7 +127,6 @@ app.post("/upload-tree", upload.single("file"), (req, res) => {
   let pythonOutput = "";
 
   pyProcess.stdout.on("data", (data) => {
-    // console.log(`Python script output: ${data}`);
     pythonOutput += data.toString();
   });
 
@@ -278,9 +275,7 @@ app.post("/upload-lda", upload.single("file"), (req, res) => {
     req.file.path,
   ]);
 
-  pyProcess.stdout.on("data", (data) => {
-    // console.log(`Python script output: ${data}`);
-  });
+  pyProcess.stdout.on("data", (data) => {});
 
   pyProcess.stderr.on("data", (data) => {
     console.error(`Python script error: ${data}`);

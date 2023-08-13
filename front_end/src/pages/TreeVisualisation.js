@@ -3,7 +3,6 @@ import * as d3 from "d3";
 import "../styles/TreeDiagram.css";
 
 function TreeVisualisation({ filename }) {
-  // filename is now a prop
   const ref = useRef(null);
   const [loading, setLoading] = useState(true);
 
@@ -58,7 +57,7 @@ function TreeVisualisation({ filename }) {
       );
 
       const xOffset = (nodesExtent[0] + nodesExtent[1]) / -2;
-      const scale = 0.8; // You can adjust the scale as needed
+      const scale = 0.8;
       svgContainer
         .transition()
         .duration(duration)
@@ -226,7 +225,7 @@ function TreeVisualisation({ filename }) {
             d.children = d._children; // Expand the root node
             d._children = null;
           }
-          nodeToFocus = d; // Set the root node as the node to focus
+          nodeToFocus = d;
         } else {
           if (d.children) {
             d._children = d.children;
@@ -243,10 +242,10 @@ function TreeVisualisation({ filename }) {
         centerNode(nodeToFocus); // Center the node to focus
       }
 
-      // This function will recursively collapse all children of a node
+      // Recursively collapse all children of a node
       function collapseAll(node) {
         if (node.children) {
-          node.children.forEach(collapseAll); // Call this function for each child
+          node.children.forEach(collapseAll);
           node._children = node.children;
           node.children = null;
         }
@@ -254,7 +253,7 @@ function TreeVisualisation({ filename }) {
 
       function centerNode(source) {
         let scale = 0.8;
-        let x = -source.y * scale + 300; // 750 is half of 1500 (the size defined for the tree layout)
+        let x = -source.y * scale + 300;
         let y = -source.x * scale + 300;
         svgContainer
           .transition()
@@ -274,44 +273,13 @@ function TreeVisualisation({ filename }) {
     };
   };
 
-  // const styles = {
-  //   visualisationContainer: {
-  //     display: "flex",
-  //     flexDirection: "column",
-  //     alignItems: "center",
-  //     width: "100%",
-  //     overflow: "auto",
-  //   },
-  //   visualisation: {
-  //     marginTop: "1em",
-  //     display: "flex",
-  //     flexDirection: "column",
-  //     alignItems: "center",
-  //     width: "100%",
-  //   },
-  //   svgContainer: {
-  //     display: "flex",
-  //     justifyContent: "center",
-  //     width: "100%",
-  //     maxHeight: "100vh",
-  //     overflow: "auto",
-  //   },
-  // };
-
   return (
-    <div
-      className="visualisation-container"
-      // style={styles.visualisationContainer}
-    >
-      <div
-        className="visualisation"
-        // style={styles.visualisation}
-      >
+    <div className="visualisation-container">
+      <div className="visualisation">
         {loading ? <div>Loading...</div> : null}
         <div
           className={`svg-container ${loading ? "hidden" : ""}`}
           ref={ref}
-          // style={styles.svgContainer}
         ></div>
       </div>
     </div>

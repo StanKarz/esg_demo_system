@@ -4,13 +4,19 @@ import d3Cloud from "d3-cloud";
 
 const WordCloud = ({ filepath, category }) => {
   const ref = useRef();
-  const [tooltip, setTooltip] = useState({
-    content: "",
-    visibility: false,
-    x: 0,
-    y: 0,
-  });
-  const tooltipRef = useRef();
+
+  // Initialize the tooltip
+  const tooltip = d3
+    .select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("z-index", "10")
+    .style("visibility", "hidden")
+    .style("background", "white")
+    .style("border", "solid")
+    .style("border-width", "1px")
+    .style("border-radius", "5px")
+    .style("padding", "10px");
 
   useEffect(() => {
     if (!filepath) {
@@ -96,12 +102,12 @@ const WordCloud = ({ filepath, category }) => {
             .duration(300)
             .style("fill", () => darkenColor(d))
             .style("font-size", d.size + 5 + "px");
-          setTooltip({
-            content: `${d.word}: ${d.frequency} (${percentage}%)`,
-            visibility: true,
-            x: event.clientX,
-            y: event.clientY,
-          });
+
+          tooltip
+            .style("visibility", "visible")
+            .text(`${d.word}: ${d.frequency} (${percentage}%)`)
+            .style("left", `${event.pageX}px`)
+            .style("top", `${event.pageY}px`);
         }
 
         function mouseout(event, d) {
@@ -110,7 +116,8 @@ const WordCloud = ({ filepath, category }) => {
             .duration(300)
             .style("font-size", d.size + "px")
             .style("fill", () => color(d));
-          setTooltip({ ...tooltip, visibility: false });
+
+          tooltip.style("visibility", "hidden");
         }
 
         layout.start();
@@ -135,7 +142,6 @@ const WordCloud = ({ filepath, category }) => {
       <div ref={ref}></div>
       {tooltip.visibility && (
         <div
-          ref={tooltipRef}
           style={{
             position: "absolute",
             left: tooltip.x,

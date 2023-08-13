@@ -4,14 +4,14 @@ import Iframe from "react-iframe";
 
 function TopicsVis() {
   let { fileName } = useParams();
-  fileName = fileName.replace(".pdf", ""); // Remove .pdf from the fileName
+  fileName = fileName.replace(".pdf", ""); // Removes .pdf from the fileName
 
   const iframeRef = useRef(null);
 
   useEffect(() => {
     if (iframeRef.current) {
       iframeRef.current.addEventListener("load", () => {
-        // Here we set the height of the iframe to match the content's height
+        // Sets the height of the iframe to match the content's height
         iframeRef.current.style.height = `${iframeRef.current.contentWindow.document.body.offsetHeight}px`;
       });
     }

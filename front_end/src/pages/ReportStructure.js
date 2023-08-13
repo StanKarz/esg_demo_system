@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import axios from "axios";
-import TreeVisualisation from "./TreeVisualisation"; // import TreeVisualisation
+import React from "react";
+import TreeVisualisation from "./TreeVisualisation";
 
 function ReportStructure({ filename, loading }) {
   return (

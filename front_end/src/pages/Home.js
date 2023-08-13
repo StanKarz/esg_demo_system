@@ -58,7 +58,7 @@ const Home = () => {
     <div style={styles.container}>
       <h1 style={styles.heading}>Welcome!</h1>
       <p style={styles.paragraph}>
-        Choose the type of visualization you would like to generate
+        Choose the type of visualisation you would like to generate
       </p>
       <button
         style={styles.button}
