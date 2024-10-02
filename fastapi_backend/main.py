@@ -1,16 +1,24 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Query
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
-from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
+from fastapi.middleware.cors import CORSMiddleware
 from bson.objectid import ObjectId
 from dotenv import load_dotenv
+from typing import List, Optional
 
-# Load environment variables
 load_dotenv()
 
 # Intialise FastAPI app
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Allow React app's origin
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # MongoDB connection
 MONGODB_URI = os.getenv("MONGODB_URI")
@@ -36,13 +44,30 @@ async def test_connection():
     raise HTTPException(status_code=404, detail="No data found in the collection")
 
 
-@app.get("/list-databases/")
-async def list_databases():
-    databases = await client.list_database_names()
-    return {"databases": databases}
+# Search endpoint
+@app.get("/search")
+async def search_companies(
+    query: Optional[str] = Query(None, min_length=1),
+    sectors: Optional[str] = Query(None),
+    exchanges: Optional[str] = Query(None),
+):
+    # Build the search filter based on query, sectors, and exchanges
+    search_filter = {}
+    if query:
+        search_filter["$or"] = [
+            {"company_name": {"$regex": query, "$options": "i"}},
+            {"company_introduction": {"$regex": query, "$options": "i"}},
+        ]
+    if sectors:
+        sector_list = sectors.split(",")
+        search_filter["sector"] = {"$in": sector_list}
+    if exchanges:
+        exchange_list = exchanges.split(",")
+        search_filter["exchange"] = {"$in": exchange_list}
 
+    # Execute the search on the companies collection
+    results = await db["companies"].find(search_filter).to_list(100)
+    if not results:
+        raise HTTPException(status_code=404, detail="No companies found")
 
-@app.get("/list-collections/")
-async def list_collections():
-    collections = await db.list_collection_names()
-    return {"collections": collections}
+    return jsonable_encoder(results, custom_encoder={ObjectId: str})

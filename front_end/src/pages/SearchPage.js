@@ -24,7 +24,7 @@ function SearchPage() {
       return;
     }
     return fetch(
-      `http://localhost:3000/search?query=${query}&sectors=${sectors}&exchanges=${exchanges}`
+      `http://localhost:8000/search?query=${query}&sectors=${sectors}&exchanges=${exchanges}`
     )
       .then((response) => response.json())
       .then((companies) => {
@@ -34,7 +34,8 @@ function SearchPage() {
           setNoResults(false);
         }
         setCompanies(companies);
-      });
+      })
+      .catch((error) => console.error("Error fetching companies:", error));
   }
 
   // Handle the form submission
