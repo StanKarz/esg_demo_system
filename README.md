@@ -76,10 +76,6 @@ Develop a methodology to provide users with clear, intuitive, and interactive vi
 
 Implement a feature that allows users to compare multiple companies’ ESG reports and commitments side-by-side, highlighting commendations and criticisms of ESG practices.
 
-### Examples:
-1. **Topic Modelling Visualisation**  
-   ![](examples/searchpage.png)
-
 ## ESG Word Frequency Visualisation
 
 This feature aims to visualize the frequency of ESG-related words in reports using two complementary approaches: bubble charts and word clouds.
@@ -102,6 +98,10 @@ These visualisation approaches transform voluminous and complex data into digest
 ## Company Search and Filter
 
 The ability to efficiently search and filter through a vast data set is crucial for users who are looking for specific information. In the context of this application, this feature is essential given the extensive list of companies and their associated details. The company search feature allows users to quickly locate companies based on various criteria such as name, industry, and exchange. It incorporates a simple text search along with advanced filtering options, enabling users to narrow down their results by specific sectors or exchanges.
+
+### Examples:
+1. **Search Functionality**  
+   ![](examples/searchpage.png)
 
 ## Articulating and Exploring System Implications
 
