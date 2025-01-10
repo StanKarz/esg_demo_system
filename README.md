@@ -8,8 +8,6 @@ The main aim of this project is to develop a user-friendly and interactive demo 
 
 Design and develop a user interface that facilitates the submission of ESG reports and presents the extracted data in a visually engaging manner. The interface ensures ease of navigation and accessibility for users of varying technical expertise.
 
----
-
 ## ESG Report Visualization
 
 Develop a methodology to provide users with clear, intuitive, and interactive visualizations of the structure and nuanced details of ESG reports.
@@ -20,8 +18,6 @@ Develop a methodology to provide users with clear, intuitive, and interactive vi
 
 2. **Report Structure Example 2**  
    ![](examples/report_structure_2.png)
-
----
 
 ## ESG Topic Visualization
 
@@ -37,13 +33,9 @@ Preprocess and transform raw ESG data to derive structured topic taxonomies and 
 3. **Topic Taxonomy Visualization 2**  
    ![](examples/topic_taxonomy_2.png)
 
----
-
 ## Comparative Analysis
 
 Implement a feature that allows users to compare multiple companies’ ESG reports and commitments side-by-side, highlighting commendations and criticisms of ESG practices.
-
----
 
 ## Company Search and Filter
 
@@ -53,8 +45,6 @@ The ability to efficiently search and filter through a vast data set is crucial 
 1. **Topic Modeling Visualization**  
    ![](examples/searchpage.png)
 
----
-
 ## Sentiment Analysis Visualization
 
 Utilize sentiment analysis techniques to assess variations in sentiment throughout the report and its sections. Visually represent these findings to offer actionable insights.
@@ -63,9 +53,6 @@ Utilize sentiment analysis techniques to assess variations in sentiment througho
 
 1. **Sentiment Analysis Visualization**  
    ![](examples/sentiment_analysis.png)
----
-
----
 
 ## ESG Word Frequency Visualization
 
@@ -89,5 +76,3 @@ These visualization approaches transform voluminous and complex data into digest
 ## Articulating and Exploring System Implications
 
 Assess the demo system's transformative implications for various stakeholders, including investors, regulators, and consumers. Explore its potential to promote transparency and accountability in ESG reporting.
-
----
