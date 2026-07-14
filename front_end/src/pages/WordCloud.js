@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import d3Cloud from "d3-cloud";
 
@@ -122,6 +122,8 @@ const WordCloud = ({ filepath, category }) => {
 
         layout.start();
       });
+    // tooltip is a d3 selection recreated each render, not reactive state
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filepath, category]);
 
   const getColorScale = (category) => {

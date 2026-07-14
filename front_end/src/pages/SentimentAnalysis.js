@@ -1,5 +1,4 @@
-import React, { useRef, useState } from "react";
-import { CircularProgress, Box, Typography } from "@mui/material";
+import React from "react";
 import SentimentVis from "./SentimentVis";
 
 function SentimentAnalysis({ filename, loading }) {

@@ -14,6 +14,8 @@ function SearchPage() {
 
   useEffect(() => {
     search();
+    // Only re-search when filters change; query searches go through form submit
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSectors, selectedExchanges]);
 
   function search() {

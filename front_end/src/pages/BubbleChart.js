@@ -517,7 +517,6 @@ const BubbleChart = ({ filepath }) => {
         const width = 1500; // Changed from 928
         const height = width;
         const margin = 1;
-        const format = d3.format(",d");
 
         const tooltip = d3
           .select("body")

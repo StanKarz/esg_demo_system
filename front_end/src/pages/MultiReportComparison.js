@@ -175,18 +175,12 @@ const MultiReportComparison = () => {
 
       await sleep(1000);
 
-      const responseWordcloud1 = await axios.post(
-        "http://localhost:3000/upload-wordcloud",
-        formDataPDF1
-      );
+      await axios.post("http://localhost:3000/upload-wordcloud", formDataPDF1);
       setFilenameWordcloud1(file1.name);
 
       await sleep(1000);
 
-      const responseWordcloud2 = await axios.post(
-        "http://localhost:3000/upload-wordcloud",
-        formDataPDF2
-      );
+      await axios.post("http://localhost:3000/upload-wordcloud", formDataPDF2);
       setFilenameWordcloud2(file2.name);
     } catch (error) {
       console.error("There was an error: ", error);

@@ -197,7 +197,7 @@ function TreeVisualisation({ filename }) {
           return diagonal(d, d.parent);
         });
 
-      const linkExit = link
+      link
         .exit()
         .transition()
         .duration(duration)
